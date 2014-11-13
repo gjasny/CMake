@@ -1,0 +1,2 @@
+  A CONTINUE command was found outside of a proper FOREACH or WHILE loop
+  scope.

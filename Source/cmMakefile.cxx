@@ -171,6 +171,9 @@ void cmMakefile::Initialize()
   // Protect the directory-level policies.
   this->PushPolicyBarrier();
 
+  // push empty loop block
+  this->PushLoopBlockBarrier();
+
   // By default the check is not done.  It is enabled by
   // cmListFileCache in the top level if necessary.
   this->CheckCMP0000 = false;
@@ -3293,6 +3296,47 @@ void cmMakefile::PopFunctionBlockerBarrier(bool reportError)
 }
 
 //----------------------------------------------------------------------------
+void cmMakefile::PushLoopBlock()
+{
+  if(this->LoopBlockCounter.empty())
+    {
+    assert(false);
+    return;
+    }
+
+  this->LoopBlockCounter.top()++;
+}
+
+void cmMakefile::PopLoopBlock()
+{
+  if(this->LoopBlockCounter.empty() || this->LoopBlockCounter.top() <= 0)
+    {
+    assert(false);
+    return;
+    }
+
+  this->LoopBlockCounter.top()--;
+}
+
+void cmMakefile::PushLoopBlockBarrier()
+{
+  this->LoopBlockCounter.push(0);
+}
+
+void cmMakefile::PopLoopBlockBarrier()
+{
+  assert(!this->LoopBlockCounter.empty());
+  assert(this->LoopBlockCounter.top() == 0);
+  this->LoopBlockCounter.pop();
+}
+
+bool cmMakefile::IsLoopBlock() const
+{
+  assert(!this->LoopBlockCounter.empty());
+  return !this->LoopBlockCounter.empty() && this->LoopBlockCounter.top() > 0;
+}
+
+//----------------------------------------------------------------------------
 bool cmMakefile::ExpandArguments(
   std::vector<cmListFileArgument> const& inArgs,
   std::vector<std::string>& outArgs) const
@@ -4426,10 +4470,14 @@ void cmMakefile::PushScope()
   this->Internal->VarStack.push(cmDefinitions(parent));
   this->Internal->VarInitStack.push(init);
   this->Internal->VarUsageStack.push(usage);
+
+  PushLoopBlockBarrier();
 }
 
 void cmMakefile::PopScope()
 {
+  PopLoopBlockBarrier();
+
   cmDefinitions* current = &this->Internal->VarStack.top();
   std::set<std::string> init = this->Internal->VarInitStack.top();
   std::set<std::string> usage = this->Internal->VarUsageStack.top();

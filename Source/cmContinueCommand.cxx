@@ -15,6 +15,15 @@
 bool cmContinueCommand::InitialPass(std::vector<std::string> const&,
                                   cmExecutionStatus &status)
 {
+  if(!this->Makefile->IsLoopBlock())
+    {
+    this->Makefile->IssueMessage(cmake::FATAL_ERROR,
+                                 "A CONTINUE command was found outside of a "
+                                 "proper FOREACH or WHILE loop scope.");
+    cmSystemTools::SetFatalErrorOccured();
+    return true;
+    }
+
   status.SetContinueInvoked(true);
   return true;
 }

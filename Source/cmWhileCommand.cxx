@@ -27,6 +27,8 @@ IsFunctionBlocked(const cmListFileFunction& lff, cmMakefile &mf,
     // if this is the endwhile for this while loop then execute
     if (!this->Depth)
       {
+      cmMakefile::LoopBlockPop loopBlockPop(&mf);
+
       // Remove the function blocker for this scope or bail.
       cmsys::auto_ptr<cmFunctionBlocker>
         fb(mf.RemoveFunctionBlocker(this, lff));
@@ -141,6 +143,8 @@ bool cmWhileCommand
   cmWhileFunctionBlocker *f = new cmWhileFunctionBlocker();
   f->Args = args;
   this->Makefile->AddFunctionBlocker(f);
+
+  this->Makefile->PushLoopBlock();
 
   return true;
 }
