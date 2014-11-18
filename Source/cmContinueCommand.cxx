@@ -12,7 +12,7 @@
 #include "cmContinueCommand.h"
 
 // cmContinueCommand
-bool cmContinueCommand::InitialPass(std::vector<std::string> const&,
+bool cmContinueCommand::InitialPass(std::vector<std::string> const &args,
                                   cmExecutionStatus &status)
 {
   if(!this->Makefile->IsLoopBlock())
@@ -25,6 +25,16 @@ bool cmContinueCommand::InitialPass(std::vector<std::string> const&,
     }
 
   status.SetContinueInvoked(true);
+
+  if(!args.empty())
+    {
+    this->Makefile->IssueMessage(cmake::FATAL_ERROR,
+                                 "The CONTINUE command does not accept any "
+                                 "arguments.");
+    cmSystemTools::SetFatalErrorOccured();
+    return true;
+    }
+
   return true;
 }
 
