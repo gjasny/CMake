@@ -242,6 +242,8 @@ Properties on Targets
    /prop_tgt/VS_WINRT_REFERENCES
    /prop_tgt/WIN32_EXECUTABLE
    /prop_tgt/XCODE_ATTRIBUTE_an-attribute
+   /prop_tgt/XCTEST
+   /prop_tgt/XCTEST_HOST
 
 Properties on Tests
 ===================

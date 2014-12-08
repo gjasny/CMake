@@ -493,6 +493,15 @@ cmGlobalXCodeGenerator::AddExtraTargets(cmLocalGenerator* root,
         allbuild->AddUtility(target.GetName());
         }
 
+      if(target.IsXCTestOnApple())
+        {
+        const char *testHostName = target.GetProperty("XCTEST_HOST");
+        if(testHostName && this->CurrentMakefile->FindTargetToUse(testHostName))
+          {
+          target.AddUtility(testHostName);
+          }
+        }
+
       // Refer to the build configuration file for easy editing.
       listfile = lg->GetMakefile()->GetStartDirectory();
       listfile += "/";
@@ -760,6 +769,10 @@ GetSourcecodeValueFromFileExtension(const std::string& _ext,
   if(ext == "o")
     {
     sourcecode = "compiled.mach-o.objfile";
+    }
+  else if(ext == "xctest")
+    {
+    sourcecode = "wrapper.cfbundle";
     }
   else if(ext == "xib")
     {
@@ -2321,6 +2334,45 @@ void cmGlobalXCodeGenerator::CreateBuildSettings(cmTarget& target,
     buildSettings->AddAttribute("DYLIB_COMPATIBILITY_VERSION",
                                 this->CreateString(vso.str().c_str()));
     }
+
+  if(target.IsXCTestOnApple())
+    {
+    if(this->XcodeVersion < 50)
+      {
+      this->CurrentMakefile->IssueMessage(cmake::WARNING,
+        "Xcode 5.0 or later is required for XCTEST support.");
+      }
+
+    const char *testHostName = target.GetProperty("XCTEST_HOST");
+    if(!testHostName)
+      {
+      cmSystemTools::Error("target has XCTEST property "
+                           "but no XCTEST_HOST one.");
+      return;
+      }
+
+    cmTarget *testHostTarget =
+      this->CurrentMakefile->FindTargetToUse(testHostName);
+    if(!testHostTarget)
+      {
+      cmSystemTools::Error("Cannot find XCTEST_HOST target: ", testHostName);
+      return;
+      }
+
+    if (!testHostTarget->IsAppBundleOnApple() &&
+        !testHostTarget->IsFrameworkOnApple())
+      {
+      cmSystemTools::Error("XCTEST_HOST target is not a Framework "
+                           "or App Bundle: ", testHostName);
+      return;
+      }
+
+    buildSettings->AddAttribute("BUNDLE_LOADER",
+      this->CreateString("$(TEST_HOST)"));
+    buildSettings->AddAttribute("TEST_HOST",
+      this->CreateString(testHostTarget->GetLocationForBuild()));
+    }
+
   // put this last so it can override existing settings
   // Convert "XCODE_ATTRIBUTE_*" properties directly.
   {
@@ -2519,7 +2571,9 @@ const char* cmGlobalXCodeGenerator::GetTargetFileType(cmTarget& cmtarget)
     case cmTarget::STATIC_LIBRARY:
       return "archive.ar";
     case cmTarget::MODULE_LIBRARY:
-      if (cmtarget.IsCFBundleOnApple())
+      if (cmtarget.IsXCTestOnApple())
+      	return "wrapper.cfbundle";
+      else if (cmtarget.IsCFBundleOnApple())
         return "wrapper.plug-in";
       else
         return ((this->XcodeVersion >= 22)?
@@ -2543,7 +2597,9 @@ const char* cmGlobalXCodeGenerator::GetTargetProductType(cmTarget& cmtarget)
     case cmTarget::STATIC_LIBRARY:
       return "com.apple.product-type.library.static";
     case cmTarget::MODULE_LIBRARY:
-      if (cmtarget.IsCFBundleOnApple())
+      if (cmtarget.IsXCTestOnApple())
+      	return "com.apple.product-type.bundle.unit-test";
+      else if (cmtarget.IsCFBundleOnApple())
         return "com.apple.product-type.bundle";
       else
         return ((this->XcodeVersion >= 22)?
