@@ -2611,6 +2611,12 @@ cmGlobalXCodeGenerator::CreateXCodeTarget(cmTarget& cmtarget,
   else
     {
     fullName = cmtarget.GetFullName(defConfig.c_str());
+    if(cmtarget.IsCFBundleOnApple())
+      {
+      std::size_t pos = fullName.find('/');
+      if(pos != std::string::npos)
+        fullName = fullName.substr(0, pos);
+      }
     }
   fileRef->AddAttribute("path", this->CreateString(fullName.c_str()));
   fileRef->AddAttribute("refType", this->CreateString("0"));
