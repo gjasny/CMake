@@ -166,6 +166,11 @@ if(_CMAKE_OSX_SYSROOT_PATH)
     ${_CMAKE_OSX_SYSROOT_PATH}/Network/Library/Frameworks
     ${_CMAKE_OSX_SYSROOT_PATH}/System/Library/Frameworks
     )
+  if(IS_DIRECTORY ${_CMAKE_OSX_SYSROOT_PATH}/../../Library/Frameworks)
+    list(APPEND CMAKE_SYSTEM_FRAMEWORK_PATH
+      ${_CMAKE_OSX_SYSROOT_PATH}/../../Library/Frameworks
+      )
+  endif()
 endif()
 list(APPEND CMAKE_SYSTEM_FRAMEWORK_PATH
   /Library/Frameworks
