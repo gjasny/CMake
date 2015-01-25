@@ -615,6 +615,13 @@ bool cmTarget::IsCFBundleOnApple() const
 }
 
 //----------------------------------------------------------------------------
+bool cmTarget::IsXCTestOnApple() const
+{
+  return (this->IsCFBundleOnApple() &&
+          this->GetPropertyAsBool("XCTEST"));
+}
+
+//----------------------------------------------------------------------------
 bool cmTarget::IsBundleOnApple() const
 {
   return this->IsFrameworkOnApple() || this->IsAppBundleOnApple() ||
@@ -6774,7 +6781,14 @@ std::string cmTarget::GetCFBundleDirectory(const std::string& config,
   const char *ext = this->GetProperty("BUNDLE_EXTENSION");
   if (!ext)
     {
-    ext = "bundle";
+    if (this->IsXCTestOnApple())
+      {
+      ext = "xctest";
+      }
+    else
+      {
+      ext = "bundle";
+      }
     }
   fpath += ext;
   fpath += "/Contents";
