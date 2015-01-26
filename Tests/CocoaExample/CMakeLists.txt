@@ -33,5 +33,3 @@ set_target_properties(CocoaExampleTest PROPERTIES
 )
 
 add_dependencies(CocoaExampleTest CocoaExample)
-
-file(COPY CocoaExample.xcscheme DESTINATION ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.xcodeproj/xcshareddata/xcschemes)
