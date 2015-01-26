@@ -24,12 +24,11 @@ add_library(CocoaExampleTest MODULE
 )
 
 set_target_properties(CocoaExampleTest PROPERTIES
-#  XCTEST TRUE
-#  XCTEST_HOST CocoaExample
-   BUNDLE TRUE
-   BUNDLE_EXTENSION "xctest"
-   CMAKE_XCODE_ATTRIBUTE_BUNDLE_LOADER "$(TEST_HOST)"
-   CMAKE_XCODE_ATTRIBUTE_TEST_HOST "FooBar3000"
+  XCTEST TRUE
+  BUNDLE TRUE
+  BUNDLE_EXTENSION "xctest"
+  XCODE_ATTRIBUTE_BUNDLE_LOADER "$(TEST_HOST)"
+  XCODE_ATTRIBUTE_TEST_HOST "$<TARGET_FILE:CocoaExample>"
 )
 
 add_dependencies(CocoaExampleTest CocoaExample)
