@@ -160,6 +160,10 @@ if("${CMAKE_GENERATOR}" MATCHES "Visual Studio [^6]")
   add_RunCMake_test(SolutionGlobalSections)
 endif()
 
+if(APPLE)
+  add_RunCMake_test(XCTest)
+endif(APPLE)
+
 if(XCODE_VERSION AND NOT "${XCODE_VERSION}" VERSION_LESS 3)
   add_RunCMake_test(XcodeProject)
 endif()
