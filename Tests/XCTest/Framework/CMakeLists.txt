@@ -14,7 +14,9 @@ find_library(XCTEST_LIBRARY XCTest)
 
 add_library(FrameworkExample SHARED
   FrameworkExample/FrameworkExample.c
-  FrameworkExample/FrameworkExample.h)
+  FrameworkExample/FrameworkExample.h
+  FrameworkExample/Info.plist
+  )
 
 target_include_directories(FrameworkExample PUBLIC .)
 
@@ -23,18 +25,21 @@ set_target_properties(FrameworkExample PROPERTIES
   VERSION "1.0.0"
   SOVERSION "1.0.0"
   FRAMEWORK_VERSION "A"
+  MACOSX_FRAMEWORK_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/FrameworkExample/Info.plist
   PUBLIC_HEADER FrameworkExample/FrameworkExample.h)
 
 # XCTest for Framework
 
 add_library(FrameworkExampleTests MODULE
-  FrameworkExampleTests/FrameworkExampleTests.m)
+  FrameworkExampleTests/FrameworkExampleTests.m
+  FrameworkExampleTests/Info.plist)
 
 target_link_libraries(FrameworkExampleTests PRIVATE FrameworkExample ${FOUNDATION_LIBRARY} ${XCTEST_LIBRARY})
  
 set_target_properties(FrameworkExampleTests PROPERTIES
   BUNDLE TRUE
   XCTEST TRUE
+  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/FrameworkExampleTests/Info.plist
   )
 
 target_link_libraries(FrameworkExampleTests PRIVATE "${CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG}$<TARGET_LINKER_FILE_DIR:FrameworkExample>")
