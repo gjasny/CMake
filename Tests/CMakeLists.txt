@@ -3064,4 +3064,17 @@ ${CMake_BINARY_DIR}/bin/cmake -DDIR=dev -P ${CMake_SOURCE_DIR}/Utilities/Release
   if(NOT CMake_TEST_EXTERNAL_CMAKE)
     add_subdirectory(CMakeTests)
   endif()
+
+  if(XCODE_VERSION AND NOT "${XCODE_VERSION}" VERSION_LESS 5)
+    add_test(XCTest ${CMAKE_CTEST_COMMAND}
+      --build-and-test
+      "${CMake_SOURCE_DIR}/Tests/XCTest"
+      "${CMake_BINARY_DIR}/Tests/XCTest"
+      ${build_generator_args}
+      --build-project XCTest
+      --build-options ${build_options}
+      --test-command ${CMAKE_CTEST_COMMAND} -C \${CTEST_CONFIGURATION_TYPE} -V
+      )
+    list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/XCTest")
+  endif()
 endif()
