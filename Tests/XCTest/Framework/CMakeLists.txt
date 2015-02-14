@@ -28,8 +28,11 @@ set_target_properties(FrameworkExample PROPERTIES
 add_library(FrameworkExampleTests MODULE
   FrameworkExampleTests/FrameworkExampleTests.m)
 
-target_link_libraries(FrameworkExampleTests FrameworkExample ${FOUNDATION_LIBRARY} ${XCTEST_LIBRARY})
+target_link_libraries(FrameworkExampleTests PRIVATE FrameworkExample ${FOUNDATION_LIBRARY} ${XCTEST_LIBRARY})
  
 set_target_properties(FrameworkExampleTests PROPERTIES
   BUNDLE TRUE
-  XCTEST TRUE)
+  XCTEST TRUE
+  )
+
+target_link_libraries(FrameworkExampleTests PRIVATE "${CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG}$<TARGET_LINKER_FILE_DIR:FrameworkExample>")
