@@ -1,6 +1,6 @@
 #import <XCTest/XCTest.h>
 
-#import "FrameworkExample.h"
+#import "FrameworkExample/FrameworkExample.h"
 
 @interface FrameworkExampleTests : XCTestCase
 
