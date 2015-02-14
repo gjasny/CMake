@@ -47,6 +47,5 @@ execute_process(
 if(XCTEST_EXECUTABLE)
   add_test(
     NAME FrameworkExampleTests
-    COMMAND echo ${XCTEST_EXECUTABLE} $<TARGET_LINKER_FILE_DIR:FrameworkExampleTests>)
-
+    COMMAND ${XCTEST_EXECUTABLE} $<TARGET_LINKER_FILE_DIR:FrameworkExampleTests>/../..)
 endif(XCTEST_EXECUTABLE)
