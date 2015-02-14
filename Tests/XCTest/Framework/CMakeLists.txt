@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 3.1)
 set(CMAKE_OSX_SYSROOT macosx)
 
 project(XCTestFramework)
- 
+
+enable_testing()
+
 #find_library(APPKIT_LIBRARY AppKit)
 find_library(FOUNDATION_LIBRARY Foundation)
 find_library(XCTEST_LIBRARY XCTest)
@@ -36,3 +38,15 @@ set_target_properties(FrameworkExampleTests PROPERTIES
   )
 
 target_link_libraries(FrameworkExampleTests PRIVATE "${CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG}$<TARGET_LINKER_FILE_DIR:FrameworkExample>")
+
+execute_process(
+  COMMAND xcrun --find xctest
+  OUTPUT_VARIABLE XCTEST_EXECUTABLE
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+if(XCTEST_EXECUTABLE)
+  add_test(
+    NAME FrameworkExampleTests
+    COMMAND echo ${XCTEST_EXECUTABLE} $<TARGET_LINKER_FILE_DIR:FrameworkExampleTests>)
+
+endif(XCTEST_EXECUTABLE)
