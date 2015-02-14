@@ -240,5 +240,6 @@ All Modules
    /module/UseSWIG
    /module/UsewxWidgets
    /module/Use_wxWindows
+   /module/XCTestUtilities
    /module/WriteBasicConfigVersionFile
    /module/WriteCompilerDetectionHeader
