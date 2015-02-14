@@ -5,7 +5,13 @@ function(add_xctest target testee)
   endif()
 
   # check that testee is a valid target type
-  # @todo
+  get_target_property(TESTEE_TYPE ${testee} TYPE)
+  get_target_property(TESTEE_FRAMEWORK ${testee} FRAMEWORK)
+  if(TESTEE_TYPE STREQUAL "SHARED_LIBRARY" AND TESTEE_FRAMEWORK)
+    # found a framework
+  else()
+  	message(FATAL_ERROR "Testee ${testee} is of unsupported type: ${TESTEE_TYPE}")
+  endif()
 
   add_library(${target} MODULE ${ARGN})
 
@@ -30,6 +36,13 @@ function(add_xctest target testee)
 endfunction(add_xctest)
 
 function(add_test_xctest target)
+  get_target_property(TARGET_TYPE ${target} TYPE)
+  get_target_property(TARGET_XCTEST ${target} XCTEST)
+
+  if(NOT TARGET_TYPE STREQUAL "MODULE_LIBRARY" OR NOT TARGET_XCTEST)
+  	message(FATAL_ERROR "Test ${target} is not a XCTest")
+  endif()
+
   execute_process(
     COMMAND xcrun --find xctest
     OUTPUT_VARIABLE XCTEST_EXECUTABLE
