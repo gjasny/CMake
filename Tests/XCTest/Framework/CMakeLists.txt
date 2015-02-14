@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.1)
+ 
+set(CMAKE_OSX_SYSROOT macosx)
+
+project(XCTestFramework)
+ 
+#find_library(APPKIT_LIBRARY AppKit)
+find_library(FOUNDATION_LIBRARY Foundation)
+find_library(XCTEST_LIBRARY XCTest)
+
+# Framework
+
+add_library(FrameworkExample SHARED
+  FrameworkExample/FrameworkExample.c
+  FrameworkExample/FrameworkExample.h)
+
+target_include_directories(FrameworkExample PUBLIC .)
+
+set_target_properties(FrameworkExample PROPERTIES
+  FRAMEWORK TRUE
+  VERSION "1.0.0"
+  SOVERSION "1.0.0"
+  FRAMEWORK_VERSION "A"
+  PUBLIC_HEADER FrameworkExample/FrameworkExample.h)
+
+# XCTest for Framework
+
+add_library(FrameworkExampleTests MODULE
+  FrameworkExampleTests/FrameworkExampleTests.m)
+
+target_link_libraries(FrameworkExampleTests FrameworkExample ${FOUNDATION_LIBRARY} ${XCTEST_LIBRARY})
+ 
+set_target_properties(FrameworkExampleTests PROPERTIES
+  BUNDLE TRUE
+  XCTEST TRUE)
