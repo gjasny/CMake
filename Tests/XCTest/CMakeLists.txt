@@ -36,3 +36,28 @@ set_target_properties(FrameworkExampleTests PROPERTIES
   )
 
 add_test_xctest(FrameworkExampleTests)
+
+# Cocoa App Bundle
+
+add_executable(CocoaExample MACOSX_BUNDLE
+  CocoaExample/main.m
+  CocoaExample/AppDelegate.m
+  CocoaExample/AppDelegate.h
+  CocoaExample/MainMenu.xib
+)
+
+find_library(FOUNDATION_LIBRARY Foundation)
+find_library(APPKIT_LIBRARY AppKit)
+
+target_link_libraries(CocoaExample PRIVATE ${FOUNDATION_LIBRARY} ${APPKIT_LIBRARY})
+
+set_target_properties(CocoaExample PROPERTIES
+  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/CocoaExample/Info.plist
+  RESOURCE "CocoaExample/MainMenu.xib")
+
+# XCTest for Cocoa App Bundle
+
+add_xctest(CocoaExampleTests CocoaExample
+  CocoaExampleTests/CocoaExampleTests.m)
+
+add_test_xctest(CocoaExampleTests)
