@@ -1,12 +1,6 @@
-cmake_minimum_required(VERSION 3.1)
-
-set(CMAKE_OSX_SYSROOT macosx)
-
-project(XCTestExamples)
+set(CMAKE_SKIP_RPATH OFF)
 
 include(XCTestUtilities)
-
-enable_testing()
 
 # Framework
 
@@ -35,7 +29,7 @@ set_target_properties(FrameworkExampleTests PROPERTIES
   MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/FrameworkExampleTests/Info.plist
   )
 
-add_test_xctest(FrameworkExampleTests)
+add_test_xctest(XCTest.FrameworkExample FrameworkExampleTests)
 
 # Cocoa App Bundle
 
@@ -61,4 +55,4 @@ set_target_properties(CocoaExample PROPERTIES
 add_xctest(CocoaExampleTests CocoaExample
   CocoaExampleTests/CocoaExampleTests.m)
 
-add_test_xctest(CocoaExampleTests)
+add_test_xctest(XCTest.CocoaExample CocoaExampleTests)

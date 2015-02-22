@@ -3101,4 +3101,8 @@ ${CMake_BINARY_DIR}/bin/cmake -DDIR=dev -P ${CMake_SOURCE_DIR}/Utilities/Release
   if(NOT CMake_TEST_EXTERNAL_CMAKE)
     add_subdirectory(CMakeTests)
   endif()
+
+  if(XCODE_VERSION AND NOT "${XCODE_VERSION}" VERSION_LESS 5)
+    add_subdirectory(XCTest)
+  endif()
 endif()
