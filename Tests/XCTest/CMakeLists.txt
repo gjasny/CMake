@@ -48,6 +48,7 @@ add_executable(CocoaExample MACOSX_BUNDLE
 
 find_library(FOUNDATION_LIBRARY Foundation)
 find_library(APPKIT_LIBRARY AppKit)
+mark_as_advanced(FOUNDATION_LIBRARY APPKIT_LIBRARY)
 
 target_link_libraries(CocoaExample PRIVATE ${FOUNDATION_LIBRARY} ${APPKIT_LIBRARY})
 
