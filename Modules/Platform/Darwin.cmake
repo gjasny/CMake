@@ -166,10 +166,12 @@ if(_CMAKE_OSX_SYSROOT_PATH)
     ${_CMAKE_OSX_SYSROOT_PATH}/Network/Library/Frameworks
     ${_CMAKE_OSX_SYSROOT_PATH}/System/Library/Frameworks
     )
-  if(IS_DIRECTORY ${_CMAKE_OSX_SYSROOT_PATH}/../../Library/Frameworks)
+  # add platform developer framework path if exists
+  get_filename_component(_CMAKE_OSX_PLATFORM_FRAMEWORK_PATH
+    ${_CMAKE_OSX_SYSROOT_PATH}/../../Library/Frameworks ABSOLUTE)
+  if(IS_DIRECTORY ${_CMAKE_OSX_PLATFORM_FRAMEWORK_PATH})
     list(APPEND CMAKE_SYSTEM_FRAMEWORK_PATH
-      ${_CMAKE_OSX_SYSROOT_PATH}/../../Library/Frameworks
-      )
+      ${_CMAKE_OSX_PLATFORM_FRAMEWORK_PATH})
   endif()
 endif()
 list(APPEND CMAKE_SYSTEM_FRAMEWORK_PATH
