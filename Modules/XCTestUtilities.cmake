@@ -26,9 +26,10 @@
 #
 # ::
 #
-#   add_test_xctest(<target>)
+#   add_test_xctest(<name> <target>)
 #
 # Add an XCTest bundle to the project to be run by :manual:`ctest(1)`.
+# The test will be named <name> and tests <target>.
 
 #=============================================================================
 # Copyright 2015 Gregor Jasny
@@ -82,10 +83,11 @@ function(add_xctest target testee)
   mark_as_advanced(FOUNDATION_LIBRARY XCTEST_LIBRARY)
 
   if(TESTEE_TYPE STREQUAL "SHARED_LIBRARY" AND TESTEE_FRAMEWORK)
-    target_link_libraries(${target} PRIVATE ${testee})
+    set_target_properties(${testee} PROPERTIES
+      BUILD_WITH_INSTALL_RPATH TRUE
+      INSTALL_NAME_DIR "@rpath")
 
-    # set rpath to find testee
-    target_link_libraries(${target} PRIVATE "${CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG}$<TARGET_LINKER_FILE_DIR:${testee}>")
+    target_link_libraries(${target} PRIVATE ${testee})
   elseif(TESTEE_TYPE STREQUAL "EXECUTABLE" AND TESTEE_MACOSX_BUNDLE)
     add_dependencies(${target} ${testee})
     if(XCODE)
@@ -98,7 +100,7 @@ function(add_xctest target testee)
   endif()
 endfunction(add_xctest)
 
-function(add_test_xctest target)
+function(add_test_xctest name target)
   get_target_property(TARGET_TYPE ${target} TYPE)
   get_target_property(TARGET_XCTEST ${target} XCTEST)
 
@@ -116,6 +118,6 @@ function(add_test_xctest target)
   endif()
 
   add_test(
-    NAME ${target}
+    NAME ${name}
     COMMAND ${XCTEST_EXECUTABLE} $<TARGET_LINKER_FILE_DIR:${target}>/../..)
 endfunction(add_test_xctest)
