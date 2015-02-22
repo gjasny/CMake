@@ -79,6 +79,7 @@ function(add_xctest target testee)
   endif()
 
   target_link_libraries(${target} PRIVATE ${FOUNDATION_LIBRARY} ${XCTEST_LIBRARY})
+  mark_as_advanced(FOUNDATION_LIBRARY XCTEST_LIBRARY)
 
   if(TESTEE_TYPE STREQUAL "SHARED_LIBRARY" AND TESTEE_FRAMEWORK)
     target_link_libraries(${target} PRIVATE ${testee})
