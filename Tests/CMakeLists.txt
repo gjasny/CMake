@@ -3066,15 +3066,26 @@ ${CMake_BINARY_DIR}/bin/cmake -DDIR=dev -P ${CMake_SOURCE_DIR}/Utilities/Release
   endif()
 
   if(XCODE_VERSION AND NOT "${XCODE_VERSION}" VERSION_LESS 5)
-    add_test(XCTest ${CMAKE_CTEST_COMMAND}
+    add_test(XCTest.Xcode ${CMAKE_CTEST_COMMAND}
       --build-and-test
       "${CMake_SOURCE_DIR}/Tests/XCTest"
-      "${CMake_BINARY_DIR}/Tests/XCTest"
+      "${CMake_BINARY_DIR}/Tests/XCTest.Xcode"
       ${build_generator_args}
       --build-project XCTest
       --build-options ${build_options}
       --test-command ${CMAKE_CTEST_COMMAND} -C \${CTEST_CONFIGURATION_TYPE} -V
       )
-    list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/XCTest")
+    list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/XCTest.Xcode")
+
+    add_test(XCTest.Make ${CMAKE_CTEST_COMMAND}
+      --build-and-test
+      "${CMake_SOURCE_DIR}/Tests/XCTest"
+      "${CMake_BINARY_DIR}/Tests/XCTest.Make"
+      --build-generator "Unix Makefiles"
+      --build-project XCTest
+      --build-options ${build_options} -DCMAKE_OSX_SYSROOT=macosx
+      --test-command ${CMAKE_CTEST_COMMAND} -C \${CTEST_CONFIGURATION_TYPE} -V
+      )
+    list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/XCTest.Make")
   endif()
 endif()
