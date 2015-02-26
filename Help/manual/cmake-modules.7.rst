@@ -241,3 +241,4 @@ All Modules
    /module/Use_wxWindows
    /module/WriteBasicConfigVersionFile
    /module/WriteCompilerDetectionHeader
+   /module/XCTestUtilities
