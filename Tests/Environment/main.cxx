@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-  char* var = getenv("CMAKE_ENVIRONMENT_TEST_VAR");
+  const char* var = getenv("CMAKE_ENVIRONMENT_TEST_VAR");
   if (!var)
     {
     var = "(null)";
