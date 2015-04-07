@@ -719,7 +719,7 @@ cmGlobalXCodeGenerator::CreateXCodeSourceFileFromPath(
     this->CreateXCodeFileReferenceFromPath(fullpath, cmtarget, lang, sf);
 
   cmXCodeObject* buildFile = this->CreateObject(cmXCodeObject::PBXBuildFile);
-  buildFile->SetComment(fileRef->GetComment());
+  buildFile->SetComment(fileRef->GetComment() + std::string(" in Sources"));
   buildFile->AddAttribute("fileRef", this->CreateObjectReference(fileRef));
 
   return buildFile;
@@ -907,7 +907,7 @@ cmGlobalXCodeGenerator::CreateXCodeFileReferenceFromPath(
   if(!fileRef)
     {
     fileRef = this->CreateObject(cmXCodeObject::PBXFileReference);
-    fileRef->SetComment(fullpath);
+    fileRef->SetComment(cmSystemTools::GetFilenameName(fullpath));
     this->FileRefs[key] = fileRef;
     }
   cmXCodeObject* group = this->GroupMap[key];
