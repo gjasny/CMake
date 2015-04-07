@@ -154,24 +154,26 @@ void cmXCodeObject::Print(std::ostream& out)
           }
         else if(j->second->TypeValue == OBJECT_LIST)
           {
+          const bool multiEntryList = j->second->List.size() != 1;
           cmXCodeObject::PrintString(out,j->first);
-          out << " = (\n";
+          out << " = ";
+          if(multiEntryList) out << "(\n";
           for(unsigned int k = 0; k < j->second->List.size(); k++)
             {
-            cmXCodeObject::Indent(5 *indentFactor, out);
+            if(multiEntryList) cmXCodeObject::Indent(5 *indentFactor, out);
             if(j->second->List[k]->TypeValue == STRING)
               {
               j->second->List[k]->PrintString(out);
-              out << ",";
               }
             else
               {
-              out << "List_" << k << "_TypeValue_IS_NOT_STRING,";
+              out << "List_" << k << "_TypeValue_IS_NOT_STRING";
               }
-            out << "\n";
+            if(multiEntryList) out << ",\n";
             }
-          cmXCodeObject::Indent(4 *indentFactor, out);
-          out << ");";
+          if(multiEntryList) cmXCodeObject::Indent(4 *indentFactor, out);
+          if(multiEntryList) out << ")";
+          out << ";";
           }
         else
           {
