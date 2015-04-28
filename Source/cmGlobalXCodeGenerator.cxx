@@ -2175,6 +2175,26 @@ void cmGlobalXCodeGenerator::CreateBuildSettings(cmTarget& target,
                                 this->CreateString("NO"));
     }
 
+#if 1
+
+  for (std::set<std::string>::iterator li = languages.begin();
+       li != languages.end(); ++li)
+    {
+      std::vector<std::string> includes;
+      this->CurrentLocalGenerator->GetIncludeDirectories(includes, gtgt, *li);
+
+      std::string includeFlags = this->CurrentLocalGenerator
+        ->GetIncludeFlags(includes, gtgt, *li, true, false, configName);
+
+      std::string& flags = cflags[*li];
+
+      if (!includeFlags.empty()) {
+        flags += " " + includeFlags;
+      }
+    }
+
+#else
+
   BuildObjectListOrString dirs(this, this->XcodeVersion >= 30);
   BuildObjectListOrString fdirs(this, this->XcodeVersion >= 30);
   std::vector<std::string> includes;
@@ -2225,6 +2245,7 @@ void cmGlobalXCodeGenerator::CreateBuildSettings(cmTarget& target,
     buildSettings->AddAttribute("HEADER_SEARCH_PATHS",
                                 dirs.CreateList());
     }
+#endif
 
   bool same_gflags = true;
   std::map<std::string, std::string> gflags;
