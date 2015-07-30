@@ -581,6 +581,24 @@ bool cmTarget::IsXCTestOnApple() const
 }
 
 //----------------------------------------------------------------------------
+bool cmTarget::IsIosSdkOnApple() const
+{
+  if (!this->IsApple)
+    {
+    return false;
+    }
+
+  std::string sdkRoot;
+  sdkRoot = this->GetMakefile()->GetSafeDefinition("CMAKE_OSX_SYSROOT");
+  sdkRoot = cmSystemTools::LowerCase(sdkRoot);
+
+  return sdkRoot.find("iphoneos") == 0 ||
+         sdkRoot.find("/iphoneos") != std::string::npos ||
+         sdkRoot.find("iphonesimulator") == 0 ||
+         sdkRoot.find("/iphonesimulator") != std::string::npos;
+}
+
+//----------------------------------------------------------------------------
 static bool processSources(cmTarget const* tgt,
       const std::vector<cmTargetInternals::TargetPropertyEntry*> &entries,
       std::vector<std::string> &srcs,

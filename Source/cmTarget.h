@@ -418,6 +418,9 @@ public:
   /** Return whether this target is an executable Bundle on Apple.  */
   bool IsAppBundleOnApple() const;
 
+  /** Return whether this target uses iOS SDK on Apple */
+  bool IsIosSdkOnApple() const;
+
   /** Return the framework version string.  Undefined if
       IsFrameworkOnApple returns false.  */
   std::string GetFrameworkVersion() const;
