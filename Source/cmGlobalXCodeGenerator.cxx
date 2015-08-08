@@ -2175,11 +2175,18 @@ void cmGlobalXCodeGenerator::CreateBuildSettings(cmTarget& target,
                                 this->CreateString("NO"));
     }
 
-  BuildObjectListOrString dirs(this, this->XcodeVersion >= 30);
   BuildObjectListOrString fdirs(this, this->XcodeVersion >= 30);
   std::vector<std::string> includes;
   this->CurrentLocalGenerator->GetIncludeDirectories(includes, gtgt,
                                                      "C", configName);
+  std::string includeFlags = this->CurrentLocalGenerator
+    ->GetIncludeFlags(includes, gtgt, "C", true, false, configName);
+  if(!includeFlags.empty())
+    {
+    std::cout << "*** Include Flags: " << includeFlags << std::endl;
+    cflags["C"] += " " + includeFlags;
+    }
+
   std::set<std::string> emitted;
   emitted.insert("/System/Library/Frameworks");
   for(std::vector<std::string>::iterator i = includes.begin();
@@ -2194,12 +2201,6 @@ void cmGlobalXCodeGenerator::CreateBuildSettings(cmTarget& target,
         {
         fdirs.Add(this->XCodeEscapePath(frameworkDir.c_str()).c_str());
         }
-      }
-    else
-      {
-      std::string incpath =
-        this->XCodeEscapePath(i->c_str());
-      dirs.Add(incpath.c_str());
       }
     }
   // Add framework search paths needed for linking.
@@ -2219,11 +2220,6 @@ void cmGlobalXCodeGenerator::CreateBuildSettings(cmTarget& target,
     {
     buildSettings->AddAttribute("FRAMEWORK_SEARCH_PATHS",
                                 fdirs.CreateList());
-    }
-  if(!dirs.IsEmpty())
-    {
-    buildSettings->AddAttribute("HEADER_SEARCH_PATHS",
-                                dirs.CreateList());
     }
 
   bool same_gflags = true;
