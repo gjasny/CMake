@@ -71,11 +71,32 @@ bool cmTargetIncludeDirectoriesCommand
 ::HandleDirectContent(cmTarget *tgt, const std::vector<std::string> &content,
                       bool prepend, bool system)
 {
+  std::cout << "cmTargetIncludeDirectoriesCommand::HandleDirectContent(";
+  std::copy(content.begin(), content.end(),
+    std::ostream_iterator<std::string>(std::cout, ", "));
+  std::cout << ")" << " joined: " << this->Join(content) << std::endl;
+
   cmListFileBacktrace lfbt = this->Makefile->GetBacktrace();
   tgt->InsertInclude(this->Join(content), lfbt, prepend);
   if (system)
     {
-    tgt->AddSystemIncludeDirectories(content);
+    std::string prefix =
+      this->Makefile->GetCurrentSourceDirectory() + std::string("/");
+    std::set<std::string> sdirs;
+    for (std::vector<std::string>::const_iterator it = content.begin();
+      it != content.end(); ++it)
+      {
+      if (cmSystemTools::FileIsFullPath(it->c_str())
+          || cmGeneratorExpression::Find(*it) == 0)
+        {
+        sdirs.insert(*it);
+        }
+      else
+        {
+        sdirs.insert(prefix + *it);
+        }
+      }
+    tgt->AddSystemIncludeDirectories(sdirs);
     }
   return true;
 }
@@ -86,12 +107,18 @@ void cmTargetIncludeDirectoriesCommand
                          const std::vector<std::string> &content,
                          bool prepend, bool system)
 {
+  std::cout << "cmTargetIncludeDirectoriesCommand::HandleInterfaceContent(";
+  std::copy(content.begin(), content.end(),
+    std::ostream_iterator<std::string>(std::cout, ", "));
+  std::cout << ")" << std::endl;
+
   cmTargetPropCommandBase::HandleInterfaceContent(tgt, content,
                                                   prepend, system);
 
   if (system)
     {
-    std::string joined = cmJoin(content, ";");
+    //std::string joined = cmJoin(content, ";");
+    std::string joined = this->Join(content);
     tgt->AppendProperty("INTERFACE_SYSTEM_INCLUDE_DIRECTORIES",
                         joined.c_str());
     }

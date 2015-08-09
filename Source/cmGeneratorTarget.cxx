@@ -333,6 +333,8 @@ static void handleSystemIncludesDep(cmMakefile *mf, cmTarget const* depTgt,
                                   std::vector<std::string>& result,
                                   bool excludeImported)
 {
+  std::cout << "handleSystemIncludesDep headTarget=" << headTarget->GetName()
+    << " depTgt=" << depTgt->GetName() << std::endl;
   if (const char* dirs =
           depTgt->GetProperty("INTERFACE_SYSTEM_INCLUDE_DIRECTORIES"))
     {
@@ -342,6 +344,12 @@ static void handleSystemIncludesDep(cmMakefile *mf, cmTarget const* depTgt,
                                       config, false, headTarget,
                                       depTgt, dagChecker), result);
     }
+
+    std::cout << "handleSystemIncludesDep result1=(";
+    std::copy(result.begin(), result.end(),
+      std::ostream_iterator<std::string>(std::cout, ", "));
+    std::cout << ")" << std::endl;
+
   if (!depTgt->IsImported() || excludeImported)
     {
     return;
@@ -356,6 +364,11 @@ static void handleSystemIncludesDep(cmMakefile *mf, cmTarget const* depTgt,
                                       config, false, headTarget,
                                       depTgt, dagChecker), result);
     }
+
+    std::cout << "handleSystemIncludesDep result2=(";
+    std::copy(result.begin(), result.end(),
+      std::ostream_iterator<std::string>(std::cout, ", "));
+    std::cout << ")" << std::endl;
 }
 
 #define IMPLEMENT_VISIT_IMPL(DATA, DATATYPE) \
@@ -695,7 +708,10 @@ bool cmGeneratorTarget::IsSystemIncludeDirectory(const std::string& dir,
     iter = this->SystemIncludesCache.insert(entry).first;
     }
 
-  return std::binary_search(iter->second.begin(), iter->second.end(), dir);
+  bool b = std::binary_search(iter->second.begin(), iter->second.end(), dir);
+  std::cout << " IsSystemIncludeDirectory(target=" << this->GetName()
+    << " dir=" << dir << ") = " << b << std::endl;
+  return b;
 }
 
 //----------------------------------------------------------------------------

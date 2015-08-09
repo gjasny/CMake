@@ -1310,6 +1310,9 @@ void cmTarget::AddLinkLibrary(cmMakefile& mf,
 void
 cmTarget::AddSystemIncludeDirectories(const std::set<std::string> &incs)
 {
+  std::cout << "cmTarget::AddSystemIncludeDirectories[set](";
+  std::copy(incs.begin(), incs.end(), std::ostream_iterator<std::string>(std::cout, ", "));
+  std::cout << ")" << std::endl;
   this->SystemIncludeDirectories.insert(incs.begin(), incs.end());
 }
 
@@ -1317,6 +1320,9 @@ cmTarget::AddSystemIncludeDirectories(const std::set<std::string> &incs)
 void
 cmTarget::AddSystemIncludeDirectories(const std::vector<std::string> &incs)
 {
+  std::cout << "cmTarget::AddSystemIncludeDirectories[vector](";
+  std::copy(incs.begin(), incs.end(), std::ostream_iterator<std::string>(std::cout, ", "));
+  std::cout << ")" << std::endl;
   this->SystemIncludeDirectories.insert(incs.begin(), incs.end());
 }
 
@@ -1887,6 +1893,8 @@ void cmTarget::InsertInclude(std::string const& entry,
                              cmListFileBacktrace const& bt,
                              bool before)
 {
+  std::cout << "InsertInclude(" << entry << ")" << std::endl;
+
   cmGeneratorExpression ge(bt);
 
   std::vector<cmTargetInternals::TargetPropertyEntry*>::iterator position
