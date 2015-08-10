@@ -1313,13 +1313,6 @@ cmTarget::AddSystemIncludeDirectories(const std::set<std::string> &incs)
   this->SystemIncludeDirectories.insert(incs.begin(), incs.end());
 }
 
-//----------------------------------------------------------------------------
-void
-cmTarget::AddSystemIncludeDirectories(const std::vector<std::string> &incs)
-{
-  this->SystemIncludeDirectories.insert(incs.begin(), incs.end());
-}
-
 #if defined(_WIN32) && !defined(__CYGWIN__)
 //----------------------------------------------------------------------------
 void

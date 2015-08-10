@@ -461,7 +461,6 @@ public:
                                   cmTarget::LinkLibraryType llt) const;
 
   void AddSystemIncludeDirectories(const std::set<std::string> &incs);
-  void AddSystemIncludeDirectories(const std::vector<std::string> &incs);
   std::set<std::string> const & GetSystemIncludeDirectories() const
     { return this->SystemIncludeDirectories; }
 
