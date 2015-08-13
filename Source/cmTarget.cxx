@@ -3527,7 +3527,7 @@ bool cmTarget::ComputeOutputDir(const std::string& config,
     const char *platforms = this->Makefile->GetDefinition(
       "CMAKE_XCODE_EFFECTIVE_PLATFORMS");
     std::string suffix =
-      usesDefaultOutputDir && platforms ? "$(EFFECTIVE_PLATFORM_NAME)" : "";
+      usesDefaultOutputDir && platforms ? "${EFFECTIVE_PLATFORM_NAME}" : "";
     this->Makefile->GetGlobalGenerator()->
       AppendDirectoryForConfig("/", conf, suffix, out);
     }
