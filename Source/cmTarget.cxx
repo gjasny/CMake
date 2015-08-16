@@ -3525,8 +3525,9 @@ bool cmTarget::ComputeOutputDir(const std::string& config,
   if(!conf.empty())
     {
     bool iOS = this->GetMakefile()->IsIosSdkOnApple();
+    bool xcode = this->GetMakefile()->IsDefinitionSet("XCODE");
     std::string suffix =
-      usesDefaultOutputDir && iOS ? "${EFFECTIVE_PLATFORM_NAME}" : "";
+      usesDefaultOutputDir && xcode && iOS ? "${EFFECTIVE_PLATFORM_NAME}" : "";
     this->Makefile->GetGlobalGenerator()->
       AppendDirectoryForConfig("/", conf, suffix, out);
     }

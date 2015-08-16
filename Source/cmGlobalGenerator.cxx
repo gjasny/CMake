@@ -2449,7 +2449,8 @@ void cmGlobalGenerator::CreateDefaultGlobalTargets(cmTargets* targets)
       {
       std::string cfgArg = "-DBUILD_TYPE=";
       bool iOS = mf->IsIosSdkOnApple();
-      if(iOS)
+      bool xcode = mf->IsDefinitionSet("XCODE");
+      if(iOS && xcode)
         {
         cfgArg += "$(CONFIGURATION)";
         singleLine.push_back(cfgArg);
