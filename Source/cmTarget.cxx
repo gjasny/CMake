@@ -581,24 +581,6 @@ bool cmTarget::IsXCTestOnApple() const
 }
 
 //----------------------------------------------------------------------------
-bool cmTarget::IsIosSdkOnApple() const
-{
-  if (!this->IsApple)
-    {
-    return false;
-    }
-
-  std::string sdkRoot;
-  sdkRoot = this->GetMakefile()->GetSafeDefinition("CMAKE_OSX_SYSROOT");
-  sdkRoot = cmSystemTools::LowerCase(sdkRoot);
-
-  return sdkRoot.find("iphoneos") == 0 ||
-         sdkRoot.find("/iphoneos") != std::string::npos ||
-         sdkRoot.find("iphonesimulator") == 0 ||
-         sdkRoot.find("/iphonesimulator") != std::string::npos;
-}
-
-//----------------------------------------------------------------------------
 static bool processSources(cmTarget const* tgt,
       const std::vector<cmTargetInternals::TargetPropertyEntry*> &entries,
       std::vector<std::string> &srcs,
@@ -3542,10 +3524,9 @@ bool cmTarget::ComputeOutputDir(const std::string& config,
   // The generator may add the configuration's subdirectory.
   if(!conf.empty())
     {
-    const char *platforms = this->Makefile->GetDefinition(
-      "CMAKE_XCODE_EFFECTIVE_PLATFORMS");
+    bool iOS = this->GetMakefile()->IsIosSdkOnApple();
     std::string suffix =
-      usesDefaultOutputDir && platforms ? "${EFFECTIVE_PLATFORM_NAME}" : "";
+      usesDefaultOutputDir && iOS ? "${EFFECTIVE_PLATFORM_NAME}" : "";
     this->Makefile->GetGlobalGenerator()->
       AppendDirectoryForConfig("/", conf, suffix, out);
     }

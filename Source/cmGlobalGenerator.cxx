@@ -2448,9 +2448,8 @@ void cmGlobalGenerator::CreateDefaultGlobalTargets(cmTargets* targets)
     if ( cmakeCfgIntDir && *cmakeCfgIntDir && cmakeCfgIntDir[0] != '.' )
       {
       std::string cfgArg = "-DBUILD_TYPE=";
-      const char *platforms =
-        mf->GetDefinition("CMAKE_XCODE_EFFECTIVE_PLATFORMS");
-      if(platforms)
+      bool iOS = mf->IsIosSdkOnApple();
+      if(iOS)
         {
         cfgArg += "$(CONFIGURATION)";
         singleLine.push_back(cfgArg);
