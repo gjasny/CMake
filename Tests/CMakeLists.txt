@@ -258,7 +258,8 @@ if(BUILD_TESTING)
   ADD_TEST_MACRO(MissingSourceFile MissingSourceFile)
   set_tests_properties(MissingSourceFile PROPERTIES
     PASS_REGULAR_EXPRESSION "CMake Error at CMakeLists.txt:3 \\(add_executable\\):[ \r\n]*Cannot find source file:[ \r\n]*DoesNotExist/MissingSourceFile.c")
-  if(CMake_TEST_XCODE_VERSION AND NOT CMake_TEST_XCODE_VERSION VERSION_LESS 6.1)
+  if(CMake_TEST_XCODE_VERSION AND NOT CMake_TEST_XCODE_VERSION VERSION_LESS 6.1 AND
+     CMAKE_OSX_SDKVER AND NOT CMAKE_OSX_SDKVER VERSION_LESS 10.10)
     if(CMAKE_GENERATOR STREQUAL "Xcode")
       ADD_TEST_MACRO(SwiftMix SwiftMix)
       ADD_TEST_MACRO(SwiftOnly SwiftOnly)
