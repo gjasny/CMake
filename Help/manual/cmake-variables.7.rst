@@ -275,6 +275,7 @@ Variables that Control the Build
    /variable/CMAKE_NO_SYSTEM_FROM_IMPORTED
    /variable/CMAKE_OSX_ARCHITECTURES
    /variable/CMAKE_OSX_DEPLOYMENT_TARGET
+   /variable/CMAKE_OSX_SDKVER
    /variable/CMAKE_OSX_SYSROOT
    /variable/CMAKE_PDB_OUTPUT_DIRECTORY
    /variable/CMAKE_PDB_OUTPUT_DIRECTORY_CONFIG

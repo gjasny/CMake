@@ -149,3 +149,18 @@ if(CMAKE_OSX_SYSROOT)
     endif()
   endif()
 endif()
+
+unset(CMAKE_OSX_SDKVER)
+if(CMAKE_OSX_SYSROOT)
+  # determine SDK version for CMAKE_OSX_SYSROOT
+  execute_process(
+    COMMAND xcodebuild -sdk ${CMAKE_OSX_SYSROOT} -version SDKVersion
+    OUTPUT_VARIABLE _stdout
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_VARIABLE _stderr
+    RESULT_VARIABLE _failed
+    )
+  if(NOT _failed)
+     set(CMAKE_OSX_SDKVER "${_stdout}")
+  endif()
+endif()
