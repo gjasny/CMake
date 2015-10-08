@@ -337,7 +337,7 @@ void cmInstallTargetGenerator::GenerateScriptForConfig(std::ostream& os,
                        type, filesFrom, optional,
                        this->FilePermissions.c_str(), no_dir_permissions,
                        no_rename, literal_args.c_str(),
-                       indent);
+                       indent, this->GetTargetNameForUniversalIosInstall(type));
 
   // Add post-installation tweaks.
   this->AddTweak(os, indent, config, filesTo,

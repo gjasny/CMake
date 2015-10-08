@@ -45,7 +45,8 @@ void cmInstallGenerator
                  const char* permissions_dir /* = 0 */,
                  const char* rename /* = 0 */,
                  const char* literal_args /* = 0 */,
-                 Indent const& indent
+                 Indent const& indent,
+                 std::string target_name_for_universal_ios_install
                  )
 {
   // Use the FILE command to install the file.
@@ -142,6 +143,13 @@ void cmInstallGenerator
     os << literal_args;
     }
   os << ")\n";
+  if(!target_name_for_universal_ios_install.empty())
+    {
+    os << indent << "include(install_universal_ios_library)\n";
+    os << indent << "install_universal_ios_library(";
+    os << "\"" << target_name_for_universal_ios_install << "\" ";
+    os << "\"" << absDest << "\")\n";
+    }
 }
 
 //----------------------------------------------------------------------------

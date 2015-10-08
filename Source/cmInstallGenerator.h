@@ -49,7 +49,8 @@ public:
     const char* permissions_dir = 0,
     const char* rename = 0,
     const char* literal_args = 0,
-    Indent const& indent = Indent()
+    Indent const& indent = Indent(),
+    std::string target_name_for_universal_ios_install = ""
     );
 
   /** Get the install destination as it should appear in the
