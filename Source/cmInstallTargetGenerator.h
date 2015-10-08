@@ -108,6 +108,11 @@ protected:
   NamelinkModeType NamelinkMode;
   bool ImportLibrary;
   bool Optional;
+
+ private:
+  /** Get target name for installing universal iOS library. If target is not
+      an iOS library or universal build is disabled return empty string. */
+  std::string GetTargetNameForUniversalIosInstall(cmInstallType type) const;
 };
 
 #endif

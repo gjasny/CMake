@@ -861,3 +861,45 @@ cmInstallTargetGenerator::AddRanlibRule(std::ostream& os,
   os << indent << "execute_process(COMMAND \""
      << ranlib << "\" \"" << toDestDirPath << "\")\n";
 }
+
+std::string
+cmInstallTargetGenerator
+::GetTargetNameForUniversalIosInstall(cmInstallType type) const
+{
+  cmMakefile const* mf = this->Target->Target->GetMakefile();
+  if(!mf->PlatformIsAppleIos())
+    {
+    return "";
+    }
+
+  switch(type)
+    {
+    case cmInstallType_STATIC_LIBRARY:
+    case cmInstallType_SHARED_LIBRARY:
+    case cmInstallType_MODULE_LIBRARY:
+      break;
+    default:
+      return "";
+    }
+
+  const char* xcode = mf->GetDefinition("XCODE");
+  if(cmSystemTools::IsOff(xcode))
+    {
+    // Xcode only
+    return "";
+    }
+
+  if(this->Target->Target->GetPropertyAsBool("IOS_INSTALL_UNIVERSAL_LIBS"))
+    {
+    return this->Target->GetName();
+    }
+
+  const char* var = "CMAKE_IOS_INSTALL_UNIVERSAL_LIBS";
+  const char* flag = mf->GetDefinition(var);
+  if (cmSystemTools::IsOff(flag))
+    {
+    return "";
+    }
+
+  return this->Target->GetName();
+}
