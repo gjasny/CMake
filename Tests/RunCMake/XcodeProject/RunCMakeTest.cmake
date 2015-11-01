@@ -94,3 +94,21 @@ if(NOT XCODE_VERSION VERSION_LESS 7)
   run_cmake(XcodeTbdStub)
   unset(RunCMake_TEST_OPTIONS)
 endif()
+
+if(NOT XCODE_VERSION VERSION_LESS 6)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/XcodeInstallIOSUniversal-build)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  set(RunCMake_TEST_OPTIONS
+    "-DCMAKE_INSTALL_PREFIX:PATH=${RunCMake_TEST_BINARY_DIR}/_install"
+    "-DCMAKE_IOS_INSTALL_UNIVERSAL_LIBS=YES")
+
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+
+  run_cmake(XcodeInstallIOSUniversal)
+  run_cmake_command(XcodeInstallIOSUniversal-install ${CMAKE_COMMAND} --build . --target install)
+
+  unset(RunCMake_TEST_BINARY_DIR)
+  unset(RunCMake_TEST_NO_CLEAN)
+  unset(RunCMake_TEST_OPTIONS)
+endif()
