@@ -230,7 +230,7 @@ function(install_universal_ios_library target destination)
   endif()
 
   if(NOT IS_DIRECTORY "${destination}")
-    message(FATAL_ERROR "`destination` is not absolute: ${destination}")
+    message(FATAL_ERROR "`destination` is no directory: ${destination}")
   endif()
 
   if(NOT EXISTS "${destination}")
