@@ -37,7 +37,10 @@ private slots:
   static void setBackgroundColor(QWidget* widget, const QColor& color);
 
 private:
-  cmsys::RegularExpression m_regex;
+  cmsys::RegularExpression m_regexParser;
+  std::string m_text;
+  std::string m_regex;
+  bool m_matched;
 };
 
 #endif

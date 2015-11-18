@@ -34,25 +34,31 @@ void RegexExplorer::setBackgroundColor(QWidget* widget, const QColor& color)
 
 void RegexExplorer::on_inputText_textChanged()
 {
-  if (!m_regex.is_valid()) return;
+  if (!m_regexParser.is_valid()) return;
 
   QString plainText = inputText->toPlainText();
+  m_text = plainText.toStdString();
 
-  bool matched = m_regex.find(plainText.toStdString());
+  m_matched = m_regexParser.find(m_text);
 
-  QColor backgroundColor = matched ? Qt::green : Qt::red;
+  QColor backgroundColor = m_matched ? Qt::green : Qt::red;
   setBackgroundColor(match0, backgroundColor);
 
-  if (!matched) return;
+  if (!m_matched) {
+    match0->setPlainText(QString());
+    matchN->setPlainText(QString());
+    return;
+  }
 
-  match0->setPlainText(QString::fromStdString(m_regex.match(0)));
+  match0->setPlainText(QString::fromStdString(m_regexParser.match(0)));
 
   on_matchNumber_currentIndexChanged(matchNumber->currentIndex());
 }
 
 void RegexExplorer::on_regularExpression_textChanged(const QString& text)
 {
-  bool validExpression = m_regex.compile(text.toStdString());
+  m_regex = text.toStdString();
+  bool validExpression = m_regexParser.compile(m_regex);
 
   QColor backgroundColor = validExpression ? Qt::green : Qt::red;
   setBackgroundColor(regularExpression, backgroundColor);
@@ -64,12 +70,12 @@ void RegexExplorer::on_regularExpression_textChanged(const QString& text)
 
 void RegexExplorer::on_matchNumber_currentIndexChanged(int index)
 {
-  if (!m_regex.is_valid()) return;
+  if (!m_matched) return;
 
   QVariant data = matchNumber->itemData(index);
   int idx = data.toInt();
 
   if (idx < 1 || idx >= cmsys::RegularExpression::NSUBEXP) return;
 
-  matchN->setPlainText(QString::fromStdString(m_regex.match(idx)));
+  matchN->setPlainText(QString::fromStdString(m_regexParser.match(idx)));
 }
