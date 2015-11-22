@@ -15,6 +15,7 @@
 
 #include "QCMake.h"
 #include <QMainWindow>
+#include <QPointer>
 #include <QThread>
 #include <QEventLoop>
 #include "ui_CMakeSetupDialog.h"
@@ -23,6 +24,7 @@ class QCMakeThread;
 class CMakeCacheModel;
 class QProgressBar;
 class QToolButton;
+class RegexExplorer;
 
 /// Qt user interface for CMake
 class CMakeSetupDialog : public QMainWindow, public Ui::CMakeSetupDialog
@@ -119,6 +121,8 @@ protected:
 
   float ProgressOffset;
   float ProgressFactor;
+
+  QPointer<RegexExplorer> RegexExplorerWindow;
 };
 
 // QCMake instance on a thread
