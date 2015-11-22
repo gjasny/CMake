@@ -15,7 +15,6 @@
 
 #include "QCMake.h"
 #include <QMainWindow>
-#include <QPointer>
 #include <QThread>
 #include <QEventLoop>
 #include "ui_CMakeSetupDialog.h"
@@ -121,8 +120,6 @@ protected:
 
   float ProgressOffset;
   float ProgressFactor;
-
-  QPointer<RegexExplorer> RegexExplorerWindow;
 };
 
 // QCMake instance on a thread

@@ -563,11 +563,6 @@ void CMakeSetupDialog::closeEvent(QCloseEvent* e)
     {
     e->ignore();
     }
-
-  if(RegexExplorerWindow)
-    {
-    RegexExplorerWindow->close();
-    }
 }
 
 void CMakeSetupDialog::doHelp()
@@ -1282,18 +1277,8 @@ void CMakeSetupDialog::doOutputFindDialog()
 
 void CMakeSetupDialog::doRegexExplorerDialog()
 {
-  if (!RegexExplorerWindow)
-    {
-    RegexExplorerWindow = new RegexExplorer(0);
-    }
-  if (!RegexExplorerWindow->isVisible())
-    {
-    RegexExplorerWindow->show();
-    }
-  else
-    {
-    RegexExplorerWindow->raise();
-    }
+  RegexExplorer dialog(this);
+  dialog.exec();
 }
 
 void CMakeSetupDialog::doOutputFindPrev()
