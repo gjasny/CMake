@@ -38,7 +38,11 @@ void RegexExplorer::on_inputText_textChanged()
   if (!m_regexParser.is_valid()) return;
 
   QString plainText = inputText->toPlainText();
+#ifdef QT_NO_STL
+  m_text = plainText.toAscii().constData();
+#else
   m_text = plainText.toStdString();
+#endif
 
   m_matched = m_regexParser.find(m_text);
 
@@ -50,14 +54,23 @@ void RegexExplorer::on_inputText_textChanged()
     return;
   }
 
-  match0->setPlainText(QString::fromStdString(m_regexParser.match(0)));
+#ifdef QT_NO_STL
+  QString matchText = m_regexParser.match(0).c_str();
+#else
+  QString matchText = QString::fromStdString(m_regexParser.match(0));
+#endif
+  match0->setPlainText(matchText);
 
   on_matchNumber_currentIndexChanged(matchNumber->currentIndex());
 }
 
 void RegexExplorer::on_regularExpression_textChanged(const QString& text)
 {
+#ifdef QT_NO_STL
+  m_regex = text.toAscii().constData();
+#else
   m_regex = text.toStdString();
+#endif
   bool validExpression = m_regexParser.compile(m_regex);
 
   setStatusColor(labelRegexValid, validExpression);
@@ -76,5 +89,10 @@ void RegexExplorer::on_matchNumber_currentIndexChanged(int index)
 
   if (idx < 1 || idx >= cmsys::RegularExpression::NSUBEXP) return;
 
-  matchN->setPlainText(QString::fromStdString(m_regexParser.match(idx)));
+#ifdef QT_NO_STL
+  QString match = m_regexParser.match(idx).c_str();
+#else
+  QString match = QString::fromStdString(m_regexParser.match(idx));
+#endif
+  matchN->setPlainText(match);
 }
