@@ -12,7 +12,7 @@
 
 #include "RegexExplorer.h"
 
-RegexExplorer::RegexExplorer(QWidget* p)
+RegexExplorer::RegexExplorer(QWidget* p) : m_matched(false)
 {
   this->setupUi(this);
 
@@ -24,11 +24,12 @@ RegexExplorer::RegexExplorer(QWidget* p)
   matchNumber->setCurrentIndex(0);
 }
 
-void RegexExplorer::setBackgroundColor(QWidget* widget, const QColor& color)
+void RegexExplorer::setStatusColor(QWidget* widget, bool successful)
 {
+  QColor color = successful ? QColor(0, 127, 0) : Qt::red;
+
   QPalette palette = widget->palette();
-  palette.setColor(QPalette::Base, color);
-  palette.setColor(QPalette::Background, color);
+  palette.setColor(QPalette::Foreground, color);
   widget->setPalette(palette);
 }
 
@@ -41,8 +42,7 @@ void RegexExplorer::on_inputText_textChanged()
 
   m_matched = m_regexParser.find(m_text);
 
-  QColor backgroundColor = m_matched ? Qt::green : Qt::red;
-  setBackgroundColor(match0, backgroundColor);
+  setStatusColor(labelRegexMatch, m_matched);
 
   if (!m_matched) {
     match0->setPlainText(QString());
@@ -60,8 +60,7 @@ void RegexExplorer::on_regularExpression_textChanged(const QString& text)
   m_regex = text.toStdString();
   bool validExpression = m_regexParser.compile(m_regex);
 
-  QColor backgroundColor = validExpression ? Qt::green : Qt::red;
-  setBackgroundColor(regularExpression, backgroundColor);
+  setStatusColor(labelRegexValid, validExpression);
 
   if (validExpression) {
     on_inputText_textChanged();

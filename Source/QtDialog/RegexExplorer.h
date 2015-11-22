@@ -34,7 +34,7 @@ private slots:
   void on_regularExpression_textChanged(const QString& text);
   void on_matchNumber_currentIndexChanged(int index);
 
-  static void setBackgroundColor(QWidget* widget, const QColor& color);
+  static void setStatusColor(QWidget* widget, bool successful);
 
 private:
   cmsys::RegularExpression m_regexParser;
