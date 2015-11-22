@@ -126,7 +126,7 @@ CMakeSetupDialog::CMakeSetupDialog()
                    this, SLOT(doInstallForCommandLine()));
 #endif
   ToolsMenu->addSeparator();
-  ToolsMenu->addAction(tr("Regex Explorer..."),
+  ToolsMenu->addAction(tr("Regular Expression Explorer..."),
                        this, SLOT(doRegexExplorerDialog()));
   ToolsMenu->addSeparator();
   ToolsMenu->addAction(tr("&Find in Output..."),

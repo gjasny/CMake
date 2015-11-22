@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Regular Expression Explorer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -37,7 +37,7 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Match 0</string>
+      <string>Complete Match</string>
      </property>
     </widget>
    </item>
