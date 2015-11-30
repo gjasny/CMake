@@ -73,7 +73,7 @@ function(install_universal_ios_get sdk variable resultvar)
 endfunction()
 
 # Get architectures of given SDK (iphonesimulator/iphoneos)
-function(install_universal_ios_get_archs sdk resultvar)
+function(install_universal_ios_get_valid_archs sdk resultvar)
   cmake_policy(SET CMP0007 NEW)
 
   if("${resultvar}" STREQUAL "")
@@ -301,12 +301,12 @@ function(install_universal_ios_library target destination)
   install_universal_ios_message("Destination: ${destination}")
 
   # Get architectures of the target
-  install_universal_ios_get_archs("${corr_sdk}" corr_archs)
-  install_universal_ios_get_archs("${this_sdk}" this_archs)
+  install_universal_ios_get_valid_archs("${corr_sdk}" corr_valid_archs)
+  install_universal_ios_get_valid_archs("${this_sdk}" this_valid_archs)
 
   # Return if there are no valid architectures for the SDK.
   # (note that library already installed)
-  if("${corr_archs}" STREQUAL "")
+  if("${corr_valid_archs}" STREQUAL "")
     install_universal_ios_message(
         "No architectures detected for `${corr_sdk}` (skip)"
     )
@@ -330,8 +330,8 @@ function(install_universal_ios_library target destination)
 
   install_universal_ios_build("${corr_sdk}")
 
-  install_universal_ios_keep_archs("${src}" "${corr_archs}")
-  install_universal_ios_keep_archs("${dst}" "${this_archs}")
+  install_universal_ios_keep_archs("${src}" "${corr_valid_archs}")
+  install_universal_ios_keep_archs("${dst}" "${this_valid_archs}")
 
   install_universal_ios_message("Current: ${dst}")
   install_universal_ios_message("Corresponding: ${src}")
