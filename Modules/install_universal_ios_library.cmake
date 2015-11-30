@@ -12,8 +12,8 @@
 #  License text for the above reference.)
 
 # Function to print messages of this module
-function(install_universal_ios_message str)
-  message("[iOS universal] ${str}")
+function(install_universal_ios_message)
+  message("[iOS universal] " ${ARGN})
 endfunction()
 
 # Get build settings for the current target/config/SDK by running
@@ -146,9 +146,9 @@ endfunction()
 # Remove given architecture from file. This step needed only in rare cases
 # when target was built in "unusual" way. Emit warning message.
 function(install_universal_ios_remove_arch lib arch)
-  set(msg_p1 "Warning! Unexpected architecture `${arch}` detected")
-  set(msg_p2 "and will be removed from file `${lib}`")
-  install_universal_ios_message("${msg_p1} ${msg_p2}")
+  install_universal_ios_message(
+    "Warning! Unexpected architecture `${arch}` detected and will be removed "
+    "from file `${lib}`")
   set(cmd "${_lipo_path}" -remove ${arch} -output ${lib} ${lib})
   execute_process(
       COMMAND ${cmd}
