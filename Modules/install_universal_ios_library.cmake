@@ -67,8 +67,7 @@ function(install_universal_ios_get_valid_archs sdk resultvar)
 
   install_universal_ios_get("${sdk}" "VALID_ARCHS" valid_archs)
 
-  string(REPLACE " " ";" valid_archs "${valid_archs}")
-
+  separate_arguments(valid_archs)
   list(REMOVE_ITEM valid_archs "") # remove empty elements
   list(REMOVE_DUPLICATES valid_archs)
 
