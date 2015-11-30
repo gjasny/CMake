@@ -175,6 +175,34 @@ function(install_universal_ios_keep_archs lib archs)
   endforeach()
 endfunction()
 
+function(install_universal_ios_detect_sdks this_sdk_var corr_sdk_var)
+  cmake_policy(SET CMP0057 NEW)
+
+  set(this_sdk "$ENV{PLATFORM_NAME}")
+  if("${this_sdk}" STREQUAL "")
+    message(FATAL_ERROR "Environment variable PLATFORM_NAME is empty")
+  endif()
+
+  set(all_platforms "$ENV{SUPPORTED_PLATFORMS}")
+  if("${all_platforms}" STREQUAL "")
+    message(FATAL_ERROR "Environment variable SUPPORTED_PLATFORMS is empty")
+  endif()
+
+  separate_arguments(all_platforms)
+  if(NOT this_sdk IN_LIST all_platforms)
+    message(FATAL_ERROR "`${this_sdk}` not found in `${all_platforms}`")
+  endif()
+
+  list(REMOVE_ITEM all_platforms "" "${this_sdk}")
+  list(LENGTH all_platforms all_platforms_length)
+  if(NOT all_platforms_length EQUAL 1)
+    message(FATAL_ERROR "Expected one element: ${all_platforms}")
+  endif()
+
+  set(${this_sdk_var} "${this_sdk}" PARENT_SCOPE)
+  set(${corr_sdk_var} "${all_platforms}" PARENT_SCOPE)
+endfunction()
+
 # Create universal library for the given target.
 #
 # Preconditions:
@@ -224,16 +252,6 @@ function(install_universal_ios_library target destination)
     message(FATAL_ERROR "CMAKE_INSTALL_CONFIG_NAME is empty")
   endif()
 
-  set(platform_name "$ENV{PLATFORM_NAME}")
-  if("${platform_name}" STREQUAL "")
-    message(FATAL_ERROR "Environment variable PLATFORM_NAME is empty")
-  endif()
-
-  set(all_platforms "$ENV{SUPPORTED_PLATFORMS}")
-  if("${all_platforms}" STREQUAL "")
-    message(FATAL_ERROR "Environment variable SUPPORTED_PLATFORMS is empty")
-  endif()
-
   set(cmd xcrun -f lipo)
   execute_process(
       COMMAND ${cmd}
@@ -250,26 +268,15 @@ function(install_universal_ios_library target destination)
   endif()
   set(_lipo_path ${output})
 
-  set(this_sdk "${platform_name}")
-
-  string(REPLACE " " ";" corr_sdk "${all_platforms}")
-  list(FIND corr_sdk "${this_sdk}" this_sdk_index)
-  if(this_sdk_index EQUAL -1)
-    message(FATAL_ERROR "`${this_sdk}` not found in `${corr_sdk}`")
-  endif()
-
-  list(REMOVE_ITEM corr_sdk "" "${this_sdk}")
-  list(LENGTH corr_sdk corr_sdk_length)
-  if(NOT corr_sdk_length EQUAL 1)
-    message(FATAL_ERROR "Expected one element: ${corr_sdk}")
-  endif()
-
   set(CURRENT_CONFIG "${CMAKE_INSTALL_CONFIG_NAME}")
   set(CURRENT_TARGET "${target}")
 
   install_universal_ios_message("Target: ${CURRENT_TARGET}")
   install_universal_ios_message("Config: ${CURRENT_CONFIG}")
   install_universal_ios_message("Destination: ${destination}")
+
+  # Get SDKs
+  install_universal_ios_detect_sdks(this_sdk corr_sdk)
 
   # Get architectures of the target
   install_universal_ios_get_valid_archs("${corr_sdk}" corr_valid_archs)
