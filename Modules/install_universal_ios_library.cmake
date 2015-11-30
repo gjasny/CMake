@@ -109,41 +109,12 @@ function(install_universal_ios_get_real_archs filename resultvar)
     )
   endif()
 
-  # 'lipo -info' succeeded, check file has only one architecture
-  string(
-      REGEX
-      REPLACE ".*Non-fat file: .* is architecture: " ""
-      single_arch
-      "${output}"
-  )
-  if(NOT "${single_arch}" STREQUAL "${output}")
-    # REGEX matches
-    string(REPLACE " " ";" single_arch "${single_arch}")
-    list(LENGTH single_arch len)
-    if(NOT len EQUAL 1)
-      message(FATAL_ERROR "Expected one architecture for output: ${output}")
-    endif()
-    set(${resultvar} "${single_arch}" PARENT_SCOPE)
-    return()
+  if(NOT output MATCHES "(Architectures in the fat file: [^\n]+ are|Non-fat file: [^\n]+ is architecture): ([^\n]*)")
+    message(FATAL_ERROR "Could not detect architecture from: ${output}")
   endif()
 
-  # 'lipo -info' succeeded, check file has multiple architectures
-  string(
-      REGEX
-      REPLACE "^Architectures in the fat file: .* are: " ""
-      architectures
-      "${output}"
-  )
-  if("${architectures}" STREQUAL "${output}")
-    # REGEX doesn't match
-    message(FATAL_ERROR "Unexpected output: ${output}")
-  endif()
-  string(REPLACE " " ";" architectures "${architectures}")
-  list(LENGTH architectures len)
-  if(len EQUAL 0 OR len EQUAL 1)
-    message(FATAL_ERROR "Expected >1 architecture for output: ${output}")
-  endif()
-  set(${resultvar} "${architectures}" PARENT_SCOPE)
+  separate_arguments(CMAKE_MATCH_2)
+  set(${resultvar} ${CMAKE_MATCH_2} PARENT_SCOPE)
 endfunction()
 
 # Run build command for the given SDK
