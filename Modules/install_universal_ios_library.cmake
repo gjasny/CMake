@@ -1,5 +1,5 @@
 #=============================================================================
-# Copyright 2014-2015 Ruslan Baratov
+# Copyright 2014-2015 Ruslan Baratov, Gregor Jasny
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file Copyright.txt for details.
@@ -190,15 +190,12 @@ endfunction()
 # Create universal library for the given target.
 #
 # Preconditions:
-#  * Library already installed to ${destination} directory
+#  * Library already installed as ${destination}
 #    for the ${PLATFORM_NAME} platform
 #
 # This function will:
-#  * Run build for the lacking platform,
-#    i.e. opposite to the ${PLATFORM_NAME}
-#  * Fuse both libraries by running `lipo -create ${src} ${dst} -output ${dst}`
-#     src: library that was just built
-#     dst: installed library
+#  * Run build for the lacking platform, i.e. opposite to the ${PLATFORM_NAME}
+#  * Fuse both libraries by running lipo
 function(install_universal_ios_library target destination)
   if("${target}" STREQUAL "")
     message(FATAL_ERROR "`target` is empty")
@@ -212,12 +209,8 @@ function(install_universal_ios_library target destination)
     message(FATAL_ERROR "`destination` is not absolute: ${destination}")
   endif()
 
-  if(NOT IS_DIRECTORY "${destination}")
-    message(FATAL_ERROR "`destination` is no directory: ${destination}")
-  endif()
-
-  if(NOT EXISTS "${destination}")
-    message(FATAL_ERROR "`destination` not exists: ${destination}")
+  if(IS_DIRECTORY "${destination}" OR IS_SYMLINK "${destination}")
+    message(FATAL_ERROR "`destination` is no regular file: ${destination}")
   endif()
 
   if("${CMAKE_BINARY_DIR}" STREQUAL "")
@@ -226,10 +219,6 @@ function(install_universal_ios_library target destination)
 
   if(NOT IS_DIRECTORY "${CMAKE_BINARY_DIR}")
     message(FATAL_ERROR "Is not a directory: ${CMAKE_BINARY_DIR}")
-  endif()
-
-  if(NOT EXISTS "${CMAKE_BINARY_DIR}")
-    message(FATAL_ERROR "Not exists: ${CMAKE_BINARY_DIR}")
   endif()
 
   if("${CMAKE_INSTALL_CONFIG_NAME}" STREQUAL "")
@@ -275,30 +264,19 @@ function(install_universal_ios_library target destination)
     return()
   endif()
 
-  # Get location of the library in build directory
-  install_universal_ios_get("${corr_sdk}" "CODESIGNING_FOLDER_PATH" src)
-
-  # Library output name
-  install_universal_ios_get("${corr_sdk}" "EXECUTABLE_NAME" corr_libname)
-  install_universal_ios_get("${this_sdk}" "EXECUTABLE_NAME" this_libname)
-
-  if("${corr_libname}" STREQUAL "${this_libname}")
-    set(libname "${corr_libname}")
-  else()
-    message(FATAL_ERROR "Library names differs: ${corr_libname} ${this_libname}")
-  endif()
-
-  set(dst "${destination}/${libname}")
-
+  # Trigger build of corresponding target
   install_universal_ios_build("${corr_sdk}")
 
-  install_universal_ios_keep_archs("${src}" "${corr_valid_archs}")
-  install_universal_ios_keep_archs("${dst}" "${this_valid_archs}")
+  # Get location of the library in build directory
+  install_universal_ios_get("${corr_sdk}" "CODESIGNING_FOLDER_PATH" corr)
 
-  install_universal_ios_message("Current: ${dst}")
-  install_universal_ios_message("Corresponding: ${src}")
+  install_universal_ios_keep_archs("${corr}" "${corr_valid_archs}")
+  install_universal_ios_keep_archs("${destination}" "${this_valid_archs}")
 
-  set(cmd "${_lipo_path}" -create ${src} ${dst} -output ${dst})
+  install_universal_ios_message("Current: ${destination}")
+  install_universal_ios_message("Corresponding: ${corr}")
+
+  set(cmd "${_lipo_path}" -create ${corr} ${destination} -output ${destination})
 
   execute_process(
       COMMAND ${cmd}
@@ -310,5 +288,5 @@ function(install_universal_ios_library target destination)
     message(FATAL_ERROR "Command failed: ${cmd}")
   endif()
 
-  install_universal_ios_message("Install done: ${dst}")
+  install_universal_ios_message("Install done: ${destination}")
 endfunction()

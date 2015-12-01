@@ -337,7 +337,7 @@ void cmInstallTargetGenerator::GenerateScriptForConfig(std::ostream& os,
                        type, filesFrom, optional,
                        this->FilePermissions.c_str(), no_dir_permissions,
                        no_rename, literal_args.c_str(),
-                       indent, this->GetTargetNameForUniversalIosInstall(type));
+                       indent);
 
   // Add post-installation tweaks.
   this->AddTweak(os, indent, config, filesTo,
@@ -525,6 +525,7 @@ void cmInstallTargetGenerator::PostReplacementTweaks(std::ostream& os,
 {
   this->AddInstallNamePatchRule(os, indent, config, file);
   this->AddChrpathPatchRule(os, indent, config, file);
+  this->AddUniversalInstallRule(os, indent, file);
   this->AddRanlibRule(os, indent, file);
   this->AddStripRule(os, indent, file);
 }
@@ -862,30 +863,38 @@ cmInstallTargetGenerator::AddRanlibRule(std::ostream& os,
      << ranlib << "\" \"" << toDestDirPath << "\")\n";
 }
 
-std::string
+//----------------------------------------------------------------------------
+void
 cmInstallTargetGenerator
-::GetTargetNameForUniversalIosInstall(cmInstallType type) const
+::AddUniversalInstallRule(std::ostream& os,
+                          Indent const& indent,
+                          const std::string& toDestDirPath)
 {
   cmMakefile const* mf = this->Target->Target->GetMakefile();
-  if(!mf->IsOn("XCODE") || !mf->PlatformIsAppleIos())
+
+  if(!mf->PlatformIsAppleIos() || !mf->IsOn("XCODE"))
     {
-    return "";
+    return;
     }
 
-  switch(type)
+  switch(this->Target->GetType())
     {
-    case cmInstallType_STATIC_LIBRARY:
-    case cmInstallType_SHARED_LIBRARY:
-    case cmInstallType_MODULE_LIBRARY:
+    case cmState::STATIC_LIBRARY:
+    case cmState::SHARED_LIBRARY:
+    case cmState::MODULE_LIBRARY:
       break;
+
     default:
-      return "";
+      return;
     }
 
-  if(this->Target->Target->GetPropertyAsBool("IOS_INSTALL_UNIVERSAL_LIBS"))
-    {
-    return this->Target->GetName();
-    }
+  if(!this->Target->Target->GetPropertyAsBool("IOS_INSTALL_UNIVERSAL_LIBS"))
+   {
+   return;
+   }
 
-  return "";
+  os << indent << "include(install_universal_ios_library)\n";
+  os << indent << "install_universal_ios_library("
+               << "\"" << this->Target->Target->GetName() << "\" "
+               << "\"" << toDestDirPath << "\")\n";
 }
