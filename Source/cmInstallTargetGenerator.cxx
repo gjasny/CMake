@@ -877,6 +877,12 @@ cmInstallTargetGenerator
     return;
     }
 
+  const char* xcodeVersion = mf->GetDefinition("XCODE_VERSION");
+  if(!xcodeVersion || cmSystemTools::VersionCompareGreater("6", xcodeVersion))
+    {
+    return;
+    }
+
   switch(this->Target->GetType())
     {
     case cmState::STATIC_LIBRARY:
