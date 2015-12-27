@@ -63,11 +63,7 @@ cmXCodeObject::cmXCodeObject(PBXType ptype, Type type)
       "Temporary cmake object, should not be referred to in Xcode file";
     }
 
-  cmSystemTools::ReplaceString(this->Id, "-", "");
-  if(this->Id.size() > 24)
-    {
-    this->Id = this->Id.substr(0, 24);
-    }
+  this->Id = cmSystemTools::ToXcodeUuidFormat(this->Id);
 
   this->TypeValue = type;
   if(this->TypeValue == OBJECT)

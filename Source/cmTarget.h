@@ -79,6 +79,12 @@ public:
   ///! Set/Get the name of the target
   const std::string& GetName() const {return this->Name;}
 
+  ///! Get the UUID of the target
+  const std::string& GetUuid() const {return this->Uuid;}
+
+  ///! Get the Xcode representation of the UUID of the target
+  std::string GetXcodeUuid() const;
+
   ///! Set the cmMakefile that owns this target
   void SetMakefile(cmMakefile *mf);
   cmMakefile *GetMakefile() const { return this->Makefile;}
@@ -329,6 +335,7 @@ private:
   std::map<std::string, cmListFileBacktrace> UtilityBacktraces;
   cmPolicies::PolicyMap PolicyMap;
   std::string Name;
+  std::string Uuid;
   std::string InstallPath;
   std::string RuntimeInstallPath;
   std::vector<std::string> LinkDirectories;
@@ -359,6 +366,9 @@ private:
 
   /** Return whether or not the target has a DLL import library.  */
   bool HasImportLibrary() const;
+
+  /** Retrieve UUID and if not exists create it */
+  void FetchOrCreateUuid();
 
   // Internal representation details.
   friend class cmTargetInternals;

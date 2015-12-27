@@ -265,6 +265,8 @@ public:
   static void EnableRunCommandOutput() {s_DisableRunCommandOutput = false; }
   static bool GetRunCommandOutput() { return s_DisableRunCommandOutput; }
 
+  static std::string ToXcodeUuidFormat(std::string input);
+
   /**
    * Some constants for different file formats.
    */

@@ -124,6 +124,7 @@ private:
 
   cmXCodeObject* FindXCodeTarget(const cmGeneratorTarget *);
   std::string GetOrCreateId(const std::string& name, const std::string& id);
+  std::string GetOrCreateId(const std::string& name, const cmTarget* target);
 
   // create cmXCodeObject from these functions so that memory can be managed
   // correctly.  All objects created are stored in this->XCodeObjects.

@@ -26,6 +26,7 @@
 #include <stdlib.h> // required for atof
 #include <assert.h>
 #include <errno.h>
+#include <uuid/uuid.h>
 #if defined(CMAKE_BUILD_WITH_CMAKE)
 #include <cmsys/hash_set.hxx>
 #define UNORDERED_SET cmsys::hash_set
@@ -80,6 +81,37 @@ void cmTarget::SetType(cmState::TargetType type, const std::string& name)
     {
     this->RecordDependencies = false;
     }
+}
+
+//----------------------------------------------------------------------------
+void cmTarget::FetchOrCreateUuid()
+{
+  std::string guidStoreName = this->Name;
+  guidStoreName += "_GUID_CMAKE";
+  const char* storedGUID =
+    this->Makefile->GetCMakeInstance()->GetCacheDefinition(guidStoreName);
+
+  if(storedGUID)
+    {
+    this->Uuid = storedGUID;
+    return;
+    }
+
+  uuid_t binary_uuid;
+  uuid_string_t string_uuid;
+  uuid_generate(binary_uuid);
+  uuid_unparse_upper(binary_uuid, string_uuid);
+
+  this->Uuid = string_uuid;
+
+  this->Makefile->GetCMakeInstance()->AddCacheEntry(guidStoreName,
+    this->Uuid.c_str(), "Stored Taget object GUID", cmState::INTERNAL);
+}
+
+//----------------------------------------------------------------------------
+std::string cmTarget::GetXcodeUuid() const
+{
+  return cmSystemTools::ToXcodeUuidFormat(this->Uuid);  
 }
 
 //----------------------------------------------------------------------------
@@ -290,6 +322,8 @@ void cmTarget::SetMakefile(cmMakefile* mf)
     this->SetPropertyDefault("JOB_POOL_COMPILE", 0);
     this->SetPropertyDefault("JOB_POOL_LINK", 0);
     }
+
+  FetchOrCreateUuid();
 }
 
 //----------------------------------------------------------------------------
@@ -1667,6 +1701,8 @@ const char *cmTarget::GetProperty(const std::string& prop,
   MAKE_STATIC_PROP(COMPILE_DEFINITIONS);
   MAKE_STATIC_PROP(IMPORTED);
   MAKE_STATIC_PROP(NAME);
+  MAKE_STATIC_PROP(UUID);
+  MAKE_STATIC_PROP(XCODE_UUID);
   MAKE_STATIC_PROP(BINARY_DIR);
   MAKE_STATIC_PROP(SOURCE_DIR);
   MAKE_STATIC_PROP(SOURCES);
@@ -1681,6 +1717,8 @@ const char *cmTarget::GetProperty(const std::string& prop,
     specialProps.insert(propCOMPILE_DEFINITIONS);
     specialProps.insert(propIMPORTED);
     specialProps.insert(propNAME);
+    specialProps.insert(propUUID);
+    specialProps.insert(propXCODE_UUID);
     specialProps.insert(propBINARY_DIR);
     specialProps.insert(propSOURCE_DIR);
     specialProps.insert(propSOURCES);
@@ -1754,6 +1792,14 @@ const char *cmTarget::GetProperty(const std::string& prop,
     else if (prop == propNAME)
       {
       return this->GetName().c_str();
+      }
+    else if (prop == propUUID)
+      {
+      return this->GetUuid().c_str();
+      }
+    else if (prop == propXCODE_UUID)
+      {
+      return this->GetXcodeUuid().c_str();
       }
     else if (prop == propBINARY_DIR)
       {

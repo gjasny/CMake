@@ -2611,8 +2611,7 @@ cmGlobalXCodeGenerator::CreateUtilityTarget(cmGeneratorTarget* gtgt)
       }
     }
 
-  target->SetId(this->GetOrCreateId(
-    gtgt->GetName(), target->GetId()).c_str());
+  target->SetId(gtgt->Target->GetXcodeUuid());
 
   return target;
 }
@@ -2801,8 +2800,7 @@ cmGlobalXCodeGenerator::CreateXCodeTarget(cmGeneratorTarget* gtgt,
     }
   target->SetTarget(gtgt);
   this->XCodeObjectMap[gtgt] = target;
-  target->SetId(this->GetOrCreateId(
-    gtgt->GetName(), target->GetId()).c_str());
+  target->SetId(gtgt->Target->GetXcodeUuid());
   return target;
 }
 

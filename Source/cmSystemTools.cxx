@@ -3060,3 +3060,14 @@ bool cmSystemTools::StringToULong(const char* str, unsigned long* value)
   *value = strtoul(str, &endp, 10);
   return (*endp == '\0') && (endp != str) && (errno == 0);
 }
+
+//----------------------------------------------------------------------------
+std::string cmSystemTools::ToXcodeUuidFormat(std::string input)
+{
+  cmSystemTools::ReplaceString(input, "-", "");
+  if(input.size() > 24)
+    {
+    input = input.substr(0, 24);
+    }
+  return input;
+}
