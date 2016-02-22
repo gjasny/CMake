@@ -1,0 +1,16 @@
+language: cpp
+sudo: false
+
+osx_image: xcode7.2
+os:
+- osx
+
+
+before_install:
+- if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install cmake; fi
+
+script:
+- mkdir _build && cd _build
+- cmake .. -G Xcode
+- cmake --build . --config Debug
+- ctest -C Debug -j$(getconf _NPROCESSORS_ONLN)
