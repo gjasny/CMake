@@ -2301,7 +2301,7 @@ const char* cmGlobalGenerator::GetPredefinedTargetsFolder()
   return "CMakePredefinedTargets";
 }
 
-bool cmGlobalGenerator::UseFolderProperty()
+bool cmGlobalGenerator::UseFolderProperty() const
 {
   const char* prop =
     this->GetCMakeInstance()->GetState()->GetGlobalProperty("USE_FOLDERS");
@@ -2316,6 +2316,35 @@ bool cmGlobalGenerator::UseFolderProperty()
   // Visual Studio Express editions until VS11:
   //
   return false;
+}
+
+std::string cmGlobalGenerator::GetEffectiveFolderName(
+  cmGeneratorTarget* gtgt) const
+{
+  std::string effectiveFolder;
+
+  if (!this->UseFolderProperty()) {
+    return effectiveFolder;
+  }
+
+  const char* projectPrefixProp =
+    this->GetCMakeInstance()->GetState()->GetGlobalProperty("PREFIX_FOLDERS");
+  if (cmSystemTools::IsOn(projectPrefixProp)) {
+    const char* targetProject = gtgt->GetProperty("PROJECT");
+    if (targetProject && std::strlen(targetProject) > 0) {
+      effectiveFolder += targetProject;
+    }
+  }
+
+  const char* targetFolder = gtgt->GetProperty("FOLDER");
+  if (targetFolder) {
+    if (!effectiveFolder.empty()) {
+      effectiveFolder += "/";
+    }
+    effectiveFolder += targetFolder;
+  }
+
+  return effectiveFolder;
 }
 
 cmTarget cmGlobalGenerator::CreateGlobalTarget(

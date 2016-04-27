@@ -429,7 +429,8 @@ protected:
     std::string const& name) const;
 
   const char* GetPredefinedTargetsFolder();
-  virtual bool UseFolderProperty();
+  virtual bool UseFolderProperty() const;
+  std::string GetEffectiveFolderName(cmGeneratorTarget* gtgt) const;
 
 private:
 #if defined(CMAKE_BUILD_WITH_CMAKE)

@@ -1929,6 +1929,13 @@ cmTarget* cmMakefile::AddNewTarget(cmState::TargetType type,
   target.SetType(type, name);
   target.SetMakefile(this);
   this->GetGlobalGenerator()->IndexTarget(&it->second);
+
+  // set project name of target
+  const char* projectName = this->GetDefinition("PROJECT_NAME");
+  if (projectName && !cmGlobalGenerator::IsReservedTarget(name)) {
+    target.SetProject(projectName);
+  }
+
   return &it->second;
 }
 
