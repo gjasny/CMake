@@ -315,6 +315,10 @@ void cmGlobalXCodeGenerator::GenerateBuildCommand(
 ///! Create a local generator appropriate to this Global Generator
 cmLocalGenerator* cmGlobalXCodeGenerator::CreateLocalGenerator(cmMakefile* mf)
 {
+  // Default handling for mig files.
+  mf->AddDefinition("CMAKE_MIG_SOURCE_FILE_EXTENSIONS", "mig");
+  FillExtensionToLanguageMap("MIG", mf);
+
   return new cmLocalXCodeGenerator(this, mf);
 }
 
