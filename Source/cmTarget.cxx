@@ -1191,6 +1191,7 @@ const char* cmTarget::GetProperty(const std::string& prop,
   MAKE_STATIC_PROP(COMPILE_FEATURES);
   MAKE_STATIC_PROP(COMPILE_OPTIONS);
   MAKE_STATIC_PROP(COMPILE_DEFINITIONS);
+  MAKE_STATIC_PROP(DEPENDENCIES);
   MAKE_STATIC_PROP(IMPORTED);
   MAKE_STATIC_PROP(NAME);
   MAKE_STATIC_PROP(BINARY_DIR);
@@ -1204,6 +1205,7 @@ const char* cmTarget::GetProperty(const std::string& prop,
     specialProps.insert(propCOMPILE_FEATURES);
     specialProps.insert(propCOMPILE_OPTIONS);
     specialProps.insert(propCOMPILE_DEFINITIONS);
+    specialProps.insert(propDEPENDENCIES);
     specialProps.insert(propIMPORTED);
     specialProps.insert(propNAME);
     specialProps.insert(propBINARY_DIR);
@@ -1254,6 +1256,14 @@ const char* cmTarget::GetProperty(const std::string& prop,
 
       static std::string output;
       output = cmJoin(this->Internal->CompileDefinitionsEntries, ";");
+      return output.c_str();
+    } else if (prop == propDEPENDENCIES) {
+      if (this->Utilities.empty()) {
+        return 0;
+      }
+
+      static std::string output;
+      output = cmJoin(this->Utilities, ";");
       return output.c_str();
     } else if (prop == propIMPORTED) {
       return this->IsImported() ? "TRUE" : "FALSE";
