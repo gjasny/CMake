@@ -2318,37 +2318,6 @@ bool cmGlobalGenerator::UseFolderProperty() const
   return false;
 }
 
-std::string cmGlobalGenerator::GetEffectiveFolderName(
-  const cmGeneratorTarget* gtgt)
-{
-  const cmGlobalGenerator* const gg = gtgt->GetLocalGenerator()->GetGlobalGenerator();
-
-  std::string effectiveFolder;
-
-  if (!gg->UseFolderProperty()) {
-    return effectiveFolder;
-  }
-
-  const char* projectPrefixProp =
-    gg->GetCMakeInstance()->GetState()->GetGlobalProperty("PREFIX_FOLDERS");
-  if (cmSystemTools::IsOn(projectPrefixProp)) {
-    const char* targetProject = gtgt->GetProperty("PROJECT");
-    if (targetProject && std::strlen(targetProject) > 0) {
-      effectiveFolder += targetProject;
-    }
-  }
-
-  const char* targetFolder = gtgt->GetProperty("FOLDER");
-  if (targetFolder) {
-    if (!effectiveFolder.empty()) {
-      effectiveFolder += "/";
-    }
-    effectiveFolder += targetFolder;
-  }
-
-  return effectiveFolder;
-}
-
 cmTarget cmGlobalGenerator::CreateGlobalTarget(
   const std::string& name, const char* message,
   const cmCustomCommandLines* commandLines, std::vector<std::string> depends,
