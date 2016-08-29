@@ -51,7 +51,7 @@ cmGhsMultiTargetGenerator::~cmGhsMultiTargetGenerator()
 std::string cmGhsMultiTargetGenerator::GetRelBuildFilePath(
   const cmGeneratorTarget* target)
 {
-  std::string output = this->GetEffectiveFolderName();
+  std::string output = cmGlobalGenerator::GetEffectiveFolderName(target);
   cmSystemTools::ConvertToUnixSlashes(output);
   if (!output.empty()) {
     output += "/";

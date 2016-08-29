@@ -2727,7 +2727,7 @@ cmXCodeObject* cmGlobalXCodeGenerator::CreateOrGetPBXGroup(
 {
   std::string s;
   std::string target;
-  const std::string targetFolder = this->GetEffectiveFolderName(gtgt);
+  const std::string targetFolder = cmGlobalGenerator::GetEffectiveFolderName(gtgt);
   if (!targetFolder.empty()) {
     target = targetFolder;
     target += "/";

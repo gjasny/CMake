@@ -2319,16 +2319,18 @@ bool cmGlobalGenerator::UseFolderProperty() const
 }
 
 std::string cmGlobalGenerator::GetEffectiveFolderName(
-  cmGeneratorTarget* gtgt) const
+  const cmGeneratorTarget* gtgt)
 {
+  const cmGlobalGenerator* const gg = gtgt->GetLocalGenerator()->GetGlobalGenerator();
+
   std::string effectiveFolder;
 
-  if (!this->UseFolderProperty()) {
+  if (!gg->UseFolderProperty()) {
     return effectiveFolder;
   }
 
   const char* projectPrefixProp =
-    this->GetCMakeInstance()->GetState()->GetGlobalProperty("PREFIX_FOLDERS");
+    gg->GetCMakeInstance()->GetState()->GetGlobalProperty("PREFIX_FOLDERS");
   if (cmSystemTools::IsOn(projectPrefixProp)) {
     const char* targetProject = gtgt->GetProperty("PROJECT");
     if (targetProject && std::strlen(targetProject) > 0) {

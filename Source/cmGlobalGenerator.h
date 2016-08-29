@@ -353,6 +353,8 @@ public:
   const std::set<const cmGeneratorTarget*>& GetFilenameTargetDepends(
     cmSourceFile* sf) const;
 
+  static std::string GetEffectiveFolderName(const cmGeneratorTarget* gtgt);
+
 #if defined(CMAKE_BUILD_WITH_CMAKE)
   cmFileLockPool& GetFileLockPool() { return FileLockPool; }
 #endif
@@ -430,7 +432,6 @@ protected:
 
   const char* GetPredefinedTargetsFolder();
   virtual bool UseFolderProperty() const;
-  std::string GetEffectiveFolderName(cmGeneratorTarget* gtgt) const;
 
 private:
 #if defined(CMAKE_BUILD_WITH_CMAKE)

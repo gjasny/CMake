@@ -397,7 +397,7 @@ void cmGlobalVisualStudio7Generator::WriteTargetsToSolution(
     // Create "solution folder" information from FOLDER target property
     //
     if (written && this->UseFolderProperty()) {
-      const std::string targetFolder = this->GetEffectiveFolderName();
+      const std::string targetFolder = cmGlobalGenerator::GetEffectiveFolderName(target);
       if (!targetFolder.empty()) {
         std::vector<cmsys::String> tokens =
           cmSystemTools::SplitString(targetFolder, '/', false);
