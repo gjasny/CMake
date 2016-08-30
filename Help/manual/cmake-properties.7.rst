@@ -32,6 +32,7 @@ Properties of Global Scope
    /prop_gbl/IN_TRY_COMPILE
    /prop_gbl/PACKAGES_FOUND
    /prop_gbl/PACKAGES_NOT_FOUND
+   /prop_gbl/PREFIX_FOLDERS
    /prop_gbl/JOB_POOLS
    /prop_gbl/PREDEFINED_TARGETS_FOLDER
    /prop_gbl/ECLIPSE_EXTRA_NATURES
@@ -240,6 +241,7 @@ Properties on Targets
    /prop_tgt/POSITION_INDEPENDENT_CODE
    /prop_tgt/PREFIX
    /prop_tgt/PRIVATE_HEADER
+   /prop_tgt/PROJECT
    /prop_tgt/PROJECT_LABEL
    /prop_tgt/PUBLIC_HEADER
    /prop_tgt/RESOURCE

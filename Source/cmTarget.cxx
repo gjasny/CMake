@@ -284,6 +284,11 @@ void cmTarget::SetMakefile(cmMakefile* mf)
   }
 }
 
+void cmTarget::SetProject(const std::string& project)
+{
+  this->Project = project;
+}
+
 void cmTarget::AddUtility(const std::string& u, cmMakefile* makefile)
 {
   if (this->Utilities.insert(u).second && makefile) {
@@ -780,6 +785,11 @@ void cmTarget::SetProperty(const std::string& prop, const char* value)
     e << "NAME property is read-only\n";
     this->Makefile->IssueMessage(cmake::FATAL_ERROR, e.str());
     return;
+  } else if (prop == "PROJECT") {
+    std::ostringstream e;
+    e << "PROJECT property is read-only\n";
+    this->Makefile->IssueMessage(cmake::FATAL_ERROR, e.str());
+    return;
   }
   if (prop == "INCLUDE_DIRECTORIES") {
     this->Internal->IncludeDirectoriesEntries.clear();
@@ -1206,6 +1216,7 @@ const char* cmTarget::GetProperty(const std::string& prop,
   MAKE_STATIC_PROP(COMPILE_DEFINITIONS);
   MAKE_STATIC_PROP(IMPORTED);
   MAKE_STATIC_PROP(NAME);
+  MAKE_STATIC_PROP(PROJECT);
   MAKE_STATIC_PROP(BINARY_DIR);
   MAKE_STATIC_PROP(SOURCE_DIR);
   MAKE_STATIC_PROP(SOURCES);
@@ -1219,6 +1230,7 @@ const char* cmTarget::GetProperty(const std::string& prop,
     specialProps.insert(propCOMPILE_DEFINITIONS);
     specialProps.insert(propIMPORTED);
     specialProps.insert(propNAME);
+    specialProps.insert(propPROJECT);
     specialProps.insert(propBINARY_DIR);
     specialProps.insert(propSOURCE_DIR);
     specialProps.insert(propSOURCES);
@@ -1278,6 +1290,9 @@ const char* cmTarget::GetProperty(const std::string& prop,
     }
     if (prop == propNAME) {
       return this->GetName().c_str();
+    }
+    if (prop == propPROJECT) {
+      return this->GetProject().c_str();
     }
     if (prop == propBINARY_DIR) {
       return this->GetMakefile()->GetCurrentBinaryDirectory();

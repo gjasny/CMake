@@ -1757,8 +1757,20 @@ std::string cmGeneratorTarget::GetEffectiveFolderName() const
         return effectiveFolder;
     }
 
+    const char* projectPrefixProp =
+        gg->GetCMakeInstance()->GetState()->GetGlobalProperty("PREFIX_FOLDERS");
+    if (cmSystemTools::IsOn(projectPrefixProp)) {
+        const char* targetProject = this->GetProperty("PROJECT");
+        if (targetProject && std::strlen(targetProject) > 0) {
+            effectiveFolder += targetProject;
+        }
+    }
+
     const char* targetFolder = this->GetProperty("FOLDER");
     if (targetFolder) {
+        if (!effectiveFolder.empty()) {
+            effectiveFolder += "/";
+        }
         effectiveFolder += targetFolder;
     }
 

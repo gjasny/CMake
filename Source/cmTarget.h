@@ -100,6 +100,10 @@ public:
 
 #undef DECLARE_TARGET_POLICY
 
+  ///! Set project name target was created in
+  void SetProject(const std::string& project);
+  const std::string& GetProject() const { return this->Project; }
+
   /**
    * Get the list of the custom commands for this target
    */
@@ -300,6 +304,7 @@ private:
   std::map<std::string, cmListFileBacktrace> UtilityBacktraces;
   cmPolicies::PolicyMap PolicyMap;
   std::string Name;
+  std::string Project;
   std::string InstallPath;
   std::string RuntimeInstallPath;
   std::vector<std::string> LinkDirectories;
