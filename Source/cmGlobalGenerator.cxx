@@ -2301,7 +2301,7 @@ const char* cmGlobalGenerator::GetPredefinedTargetsFolder()
   return "CMakePredefinedTargets";
 }
 
-bool cmGlobalGenerator::UseFolderProperty()
+bool cmGlobalGenerator::UseFolderProperty() const
 {
   const char* prop =
     this->GetCMakeInstance()->GetState()->GetGlobalProperty("USE_FOLDERS");
