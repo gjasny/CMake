@@ -2084,11 +2084,11 @@ void cmVisualStudio10TargetGenerator::WritePathAndIncrementalLinkOptions()
     if (ttype >= cmStateEnums::UTILITY) {
       this->WritePlatformConfigTag("IntDir", config->c_str(), 2);
       *this->BuildFileStream
-        << "$(Platform)\\$(Configuration)\\$(ProjectName)\\"
+        << "$(SolutionDir)$(Platform)\\$(Configuration)\\$(ProjectName)\\"
         << "</IntDir>\n";
     } else {
-      std::string intermediateDir =
-        this->LocalGenerator->GetTargetDirectory(this->GeneratorTarget);
+      std::string intermediateDir = "$(SolutionDir)";
+      intermediateDir += this->LocalGenerator->GetTargetDirectory(this->GeneratorTarget);
       intermediateDir += "/";
       intermediateDir += *config;
       intermediateDir += "/";
